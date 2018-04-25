@@ -1,0 +1,11 @@
+{
+	"commentStamp" : "",
+	"super" : "BLModelExporter",
+	"category" : "BL-Model-Exporter-Seaside",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [ ],
+	"name" : "BLModelExporterSeaside",
+	"type" : "normal"
+}
