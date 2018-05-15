@@ -10,4 +10,4 @@ writeCodeWith: anExporter
 	'
 						,
 							(self widgets
-								flatCollect: [ :widget | widget | widget exportCode , String crlf , String tab ]) ]
+								flatCollect: [ :widget | widget exportCode , String crlf , String tab ]) ]
