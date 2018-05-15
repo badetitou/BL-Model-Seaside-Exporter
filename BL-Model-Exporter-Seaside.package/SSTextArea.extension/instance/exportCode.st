@@ -6,4 +6,4 @@ exportCode
 				with: ''Text lines...''.
 			html mdlTextArea
 				id: html lastId;
-				rows: 3 ] ].'
+				rows: 3 ].'
