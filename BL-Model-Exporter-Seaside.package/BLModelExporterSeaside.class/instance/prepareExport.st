@@ -1,3 +1,3 @@
 accessing
-export
+prepareExport
 	RPackageOrganizer default createPackageNamed: model name
