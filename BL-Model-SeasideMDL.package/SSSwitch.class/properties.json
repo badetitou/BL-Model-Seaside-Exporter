@@ -1,11 +1,11 @@
 {
 	"commentStamp" : "",
-	"super" : "BLUIContainer",
+	"super" : "SSInput",
 	"category" : "BL-Model-SeasideMDL-Widget",
 	"classinstvars" : [ ],
 	"pools" : [ ],
 	"classvars" : [ ],
 	"instvars" : [ ],
-	"name" : "SSLabel",
+	"name" : "SSSwitch",
 	"type" : "normal"
 }

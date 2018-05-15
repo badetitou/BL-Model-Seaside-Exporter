@@ -1,3 +1,3 @@
 meta
 canHandle: anInvocation
-	^ true
+	^  'BLLabel|Label' matches: anInvocation invokedClassName

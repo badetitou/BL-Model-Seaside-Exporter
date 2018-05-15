@@ -1,11 +1,11 @@
 {
 	"commentStamp" : "",
 	"super" : "BLUIContainer",
-	"category" : "BL-Model-SeasideMDL-Widget",
+	"category" : "BL-Model-SeasideMDL",
 	"classinstvars" : [ ],
 	"pools" : [ ],
 	"classvars" : [ ],
 	"instvars" : [ ],
-	"name" : "SSLabel",
+	"name" : "ManifestBLModelSeasideMDL",
 	"type" : "normal"
 }
