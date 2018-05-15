@@ -1,3 +1,3 @@
 *BL-Model-Exporter-Seaside
 exportCode
-	^ 'html heading: ''hello'''
+	^ 'html p with: ''hello'''
