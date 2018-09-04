@@ -13,3 +13,9 @@ BLModelExporterSeaside >> postExport [
 BLModelExporterSeaside >> prepareExport [
 	RPackageOrganizer default createPackageNamed: model name
 ]
+
+{ #category : #visiting }
+BLModelExporterSeaside >> visitMooseModel: aMooseModel [
+	aMooseModel allBLPhase do: [ :phase | self visit: phase ].
+	aMooseModel allBLPageMetier do: [ :pageMetier | self visit: pageMetier ].
+]

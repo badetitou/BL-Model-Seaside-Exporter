@@ -1,5 +1,10 @@
 Class {
 	#name : #ManifestBLModelSeasideMDL,
-	#superclass : #BLUIContainer,
-	#category : 'BL-Model-SeasideMDL'
+	#superclass : #Object,
+	#category : #'BL-Model-SeasideMDL'
 }
+
+{ #category : #testing }
+ManifestBLModelSeasideMDL class >> canHandle: anInvocation [
+	^ true
+]
