@@ -1,6 +1,6 @@
-Extension { #name : #SSLabel }
+Extension { #name : #BLUIParagraph }
 
 { #category : #'*BL-Model-Exporter-Seaside' }
-SSLabel >> exportCode [
+BLUIParagraph >> exportCode [
 	^ 'html paragraph: ''hello''.'
 ]

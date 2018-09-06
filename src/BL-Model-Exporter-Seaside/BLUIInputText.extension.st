@@ -1,10 +1,10 @@
-Extension { #name : #SSInputText }
+Extension { #name : #BLUIInputText }
 
 { #category : #'*BL-Model-Exporter-Seaside' }
-SSInputText >> exportCode [
-	^ 'html
+BLUIInputText >> exportCode [
+	^ '	html
 		mdlTextFieldContainer: [ html mdlTextFieldLabel
 				for: html nextId;
 				with: ''Text...''.
-			html mdlTextFieldInput id: html lastId ].'
+			html mdlTextFieldInput id: html lastId ]'
 ]

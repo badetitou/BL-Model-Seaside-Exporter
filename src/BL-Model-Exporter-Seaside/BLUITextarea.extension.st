@@ -1,7 +1,7 @@
-Extension { #name : #SSTextArea }
+Extension { #name : #BLUITextarea }
 
 { #category : #'*BL-Model-Exporter-Seaside' }
-SSTextArea >> exportCode [
+BLUITextarea >> exportCode [
 	^ 'html
 		mdlTextFieldContainer: [ html mdlTextFieldLabel
 				for: html nextId;

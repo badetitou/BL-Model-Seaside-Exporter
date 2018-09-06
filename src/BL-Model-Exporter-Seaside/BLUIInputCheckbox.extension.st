@@ -1,7 +1,7 @@
-Extension { #name : #SSCheckBox }
+Extension { #name : #BLUIInputCheckbox }
 
 { #category : #'*BL-Model-Exporter-Seaside' }
-SSCheckBox >> exportCode [
+BLUIInputCheckbox >> exportCode [
 	^ 'html mdlCheckboxContainer
 		rippleEffect;
 		for: html nextId;
