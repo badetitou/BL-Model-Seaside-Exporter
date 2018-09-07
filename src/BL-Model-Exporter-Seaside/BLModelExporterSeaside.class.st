@@ -6,9 +6,9 @@ Class {
 
 { #category : #visiting }
 BLModelExporterSeaside >> exportCodeOfPageMetierOf: aBLPhase [
-	aBLPhase hasMultiplePageMetier ifTrue: [ ^ 'multiple' ].
-	aBLPhase hasNoPageMetier ifTrue: [ ^ 'noPageMetier' ].
-	^ 'onePageMetier'
+	aBLPhase hasMultiplePageMetier ifTrue: [ ^ '"multiple"' ].
+	aBLPhase hasNoPageMetier ifTrue: [ ^ '' ].
+	^ self visit: (aBLPhase pageMetiers at: 1).
 ]
 
 { #category : #accessing }
@@ -19,6 +19,11 @@ BLModelExporterSeaside >> postExport [
 { #category : #accessing }
 BLModelExporterSeaside >> prepareExport [
 	RPackageOrganizer default createPackageNamed: model name
+]
+
+{ #category : #visiting }
+BLModelExporterSeaside >> visitBLPageMetier: aPageMetier [
+	^ aPageMetier widgets flatCollect: [ :widget | (self visit: widget), String crlf, String tab ]
 ]
 
 { #category : #visiting }
@@ -50,6 +55,11 @@ BLModelExporterSeaside >> visitBLPhase: aBLPhase [
 				mdlMiniFooterLeftSection: [ html mdlLogo: ''Berger-Levrault''.
 					html
 						mdlMiniFooterLinkList: [ html listItem: [ html anchor: ''By Benoît "Badetitou" Verhaeghe'' ] ] ] ]' 
+]
+
+{ #category : #visiting }
+BLModelExporterSeaside >> visitBLWidget: aBLWidget [
+	^ aBLWidget exportCode
 ]
 
 { #category : #visiting }
