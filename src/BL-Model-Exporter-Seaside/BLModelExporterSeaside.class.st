@@ -47,14 +47,14 @@ BLModelExporterSeaside >> exportCodeOfMultiplePageMetier: aBLPhase [
 								keysDo: [ :metier | 
 									html mdlLayoutTab
 										isActiveIf: metier = ''', (aBLPhase pageMetiers at: 1) title,''';
-										url: ''#tab-'' , metier replaceAllRegex: '' '' with: '''';
+										url: ''#tab-'' , (metier replaceAllRegex: '' '' with: '''');
 										with: metier ] ] ].
 			html
 				mdlLayoutContent: [ metiers
 						keysAndValuesDo: [ :metier :content | 
 							html mdlLayoutTabPanel
 								isActiveIf: metier = ''', (aBLPhase pageMetiers at: 1) title,''';
-								id: ''tab-'' , metier replaceAllRegex: '' '' with: '''';
+								id: ''tab-'' , (metier replaceAllRegex: '' '' with: '''');
 								with: [ content renderContentOn: html ] ] ] ].'.
 ]
 
