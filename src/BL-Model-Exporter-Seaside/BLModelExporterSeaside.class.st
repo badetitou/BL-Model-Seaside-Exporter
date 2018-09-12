@@ -5,10 +5,81 @@ Class {
 }
 
 { #category : #visiting }
+BLModelExporterSeaside >> acceptedNameForPageMetier: aPageMetier [
+	^ (aPageMetier name splitOn: ':') last
+]
+
+{ #category : #visiting }
+BLModelExporterSeaside >> createSubPageMetierOf: aBLPhase. [
+	aBLPhase pageMetiers do: [ :metier |
+		| class | 
+		class := MDLApplication
+		subclass: (self acceptedNameForPageMetier: metier)
+		instanceVariableNames: ''
+		classVariableNames: ''
+		package: self model name.
+			class
+		compile:
+			'initialize
+    super initialize.'.
+	class
+		compile:
+			('renderContentOn: html
+			', (self visit: metier) )
+		 ]
+]
+
+{ #category : #visiting }
+BLModelExporterSeaside >> exportCodeOfMultiplePageMetier: aBLPhase [
+	self createSubPageMetierOf: aBLPhase.
+	^  '
+		| metiers |
+		metiers := OrderedDictionary new.',
+		(aBLPhase pageMetiers flatCollect: [ :metier | String crlf, 'metiers add: ''', (metier title),''' -> ', (self acceptedNameForPageMetier: metier), ' new.'   ]),' 
+		html mdlLayout
+		fixedHeader;
+		with: [ html
+				mdlLayoutHeader: [ html
+						mdlLayoutHeaderRow: [ html mdlLayoutTitle: ''' , aBLPhase title protectPharoQuote ,	 ''' ].
+					html mdlLayoutTabBar
+						rippleEffect;
+						with: [ metiers
+								keysDo: [ :metier | 
+									html mdlLayoutTab
+										isActiveIf: metier = ''', (aBLPhase pageMetiers at: 1) title,''';
+										url: ''#tab-'' , metier replaceAllRegex: '' '' with: '''';
+										with: metier ] ] ].
+			html
+				mdlLayoutContent: [ metiers
+						keysAndValuesDo: [ :metier :content | 
+							html mdlLayoutTabPanel
+								isActiveIf: metier = ''', (aBLPhase pageMetiers at: 1) title,''';
+								id: ''tab-'' , metier replaceAllRegex: '' '' with: '''';
+								with: [ content renderContentOn: html ] ] ] ].'.
+]
+
+{ #category : #visiting }
+BLModelExporterSeaside >> exportCodeOfOnePageMetier: aBLPhase [
+	^ '
+		html mdlLayout
+		fixedHeader;
+		with: [ html
+				mdlLayoutHeader: [ html
+						mdlLayoutHeaderRow: [ html mdlLayoutTitle: ''' , aBLPhase title protectPharoQuote
+		,
+			''' ] ]. 
+		html mdlLayoutContent: [
+			' , (self visit: (aBLPhase pageMetiers at: 1)) , '
+			] ].'
+]
+
+{ #category : #visiting }
 BLModelExporterSeaside >> exportCodeOfPageMetierOf: aBLPhase [
-	aBLPhase hasMultiplePageMetier ifTrue: [ ^ '"multiple"' ].
-	aBLPhase hasNoPageMetier ifTrue: [ ^ '' ].
-	^ self visit: (aBLPhase pageMetiers at: 1).
+	aBLPhase hasMultiplePageMetier
+		ifTrue: [ ^ self exportCodeOfMultiplePageMetier: aBLPhase ].
+	aBLPhase hasNoPageMetier
+		ifTrue: [ ^ '' ].
+	^ self exportCodeOfOnePageMetier: aBLPhase
 ]
 
 { #category : #accessing }
@@ -18,7 +89,7 @@ BLModelExporterSeaside >> postExport [
 
 { #category : #accessing }
 BLModelExporterSeaside >> prepareExport [
-	RPackageOrganizer default unregisterPackageNamed: model name.
+	
 	RPackageOrganizer default createPackageNamed: model name
 ]
 
@@ -42,20 +113,18 @@ BLModelExporterSeaside >> visitBLPhase: aBLPhase [
 	class class
 		compile:
 			'initialize
-	self registerToDeployment: ''' , aBLPhase name, ''''.
-	class compile: 
-		'renderContentOn: html 
-		html mdlLayout
-		fixedHeader;
-		with: [ html
-				mdlLayoutHeader: [ html
-						mdlLayoutHeaderRow: [ html mdlLayoutTitle: ''', aBLPhase title protectPharoQuote ,'''. ] ] ].
-	', (self exportCodeOfPageMetierOf: aBLPhase),
-	'html
+	self registerToDeployment: ''' , aBLPhase name , ''''.
+	class
+		compile:
+			'renderContentOn: html  
+	' , (self exportCodeOfPageMetierOf: aBLPhase)
+				,
+					'
+	html
 		mdlMiniFooter: [ html
 				mdlMiniFooterLeftSection: [ html mdlLogo: ''Berger-Levrault''.
 					html
-						mdlMiniFooterLinkList: [ html listItem: [ html anchor: ''By Benoît "Badetitou" Verhaeghe'' ] ] ] ]' 
+						mdlMiniFooterLinkList: [ html listItem: [ html anchor: ''By Benoît "Badetitou" Verhaeghe'' ] ] ] ]'
 ]
 
 { #category : #visiting }
