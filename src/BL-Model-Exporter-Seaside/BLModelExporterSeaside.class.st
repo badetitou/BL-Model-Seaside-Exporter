@@ -18,6 +18,7 @@ BLModelExporterSeaside >> postExport [
 
 { #category : #accessing }
 BLModelExporterSeaside >> prepareExport [
+	RPackageOrganizer default unregisterPackageNamed: model name.
 	RPackageOrganizer default createPackageNamed: model name
 ]
 
