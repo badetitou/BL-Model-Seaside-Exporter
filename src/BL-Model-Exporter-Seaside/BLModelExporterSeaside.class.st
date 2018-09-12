@@ -82,6 +82,11 @@ BLModelExporterSeaside >> exportCodeOfPageMetierOf: aBLPhase [
 	^ self exportCodeOfOnePageMetier: aBLPhase
 ]
 
+{ #category : #visiting }
+BLModelExporterSeaside >> getVisitSubWidgetOf: aWidget [
+	^ (aWidget widgets flatCollect: [:widget |  (self visit: widget) , String crlf, String tab])
+]
+
 { #category : #accessing }
 BLModelExporterSeaside >> postExport [
 	(RPackageOrganizer default packageNamed: model name) classes do: #initialize
@@ -125,6 +130,45 @@ BLModelExporterSeaside >> visitBLPhase: aBLPhase [
 				mdlMiniFooterLeftSection: [ html mdlLogo: ''Berger-Levrault''.
 					html
 						mdlMiniFooterLinkList: [ html listItem: [ html anchor: ''By Benoît "Badetitou" Verhaeghe'' ] ] ] ]'
+]
+
+{ #category : #visiting }
+BLModelExporterSeaside >> visitBLUIFieldset: aBLUIFieldset [
+	^ 'html mdlCard
+		shadow: 2;
+		mdlTypographyTextLeft;
+		with: [ 
+			html mdlCardTitle
+				with: [ html mdlCardTitleText: ''' , (aBLUIFieldset parameters at: #title)
+		,
+			''' ].
+				
+			html mdlCardTextContainer: [ 
+				' , (aBLUIFieldset widgets flatCollect: [ :widget | self visit: widget ]) , ' 
+				] ].'
+]
+
+{ #category : #visiting }
+BLModelExporterSeaside >> visitBLUILeaf: aBLUILeaf [
+	^ 'html text: ''', aBLUILeaf text protectPharoQuote, '''.'
+]
+
+{ #category : #visiting }
+BLModelExporterSeaside >> visitBLUILink: aBLUILink [ 
+	^ 'html mdlButton
+		rippleEffect;
+		with: ''',(aBLUILink parameters
+		at: #label),'''.'
+]
+
+{ #category : #visiting }
+BLModelExporterSeaside >> visitBLUIPanel: aBLUIBLUIPanel [
+	^ (aBLUIBLUIPanel widgets flatCollect: [ :widget | self visit: widget ])
+]
+
+{ #category : #visiting }
+BLModelExporterSeaside >> visitBLUIParagraph: aBLUIParagraph [
+	^ 'html paragraph: [ ', (self getVisitSubWidgetOf: aBLUIParagraph ), '].'
 ]
 
 { #category : #visiting }
