@@ -89,11 +89,32 @@ BLModelExporterSeaside >> generateCss [
 		subclass: WAFileLibrary name , self model name
 		instanceVariableNames: ''
 		classVariableNames: ''
-		package: (self model name, '-Config').
+		package: self model name , '-Config'.
 	class
 		compile:
 			'mainCss
-    ^ '''''
+    ^ ''
+body {
+  font-family: "Open Sans", sans-serif;
+}
+
+.mdl-card__title-text {
+    color: #1D417D;
+    cursor: default;
+    font-family: "Arial";
+    font-size: 11px;
+    font-weight: bold;
+    padding-left: 5px;
+    text-align: left;
+    vertical-align: middle;
+    height: 16px;
+}
+
+.mdl-card__title {
+	padding: 0px 0px 0px 5px;
+}
+
+'' '
 ]
 
 { #category : #visiting }
@@ -142,12 +163,11 @@ BLModelExporterSeaside >> visitBLPhase: aBLPhase [
 		compile:
 			'updateRoot: anHtmlRoot
 		super updateRoot: anHtmlRoot.
-		anHtmlRoot stylesheet 
-			url: WAFileLibrary', self model name,'/ #mainCss'.
+		anHtmlRoot stylesheet url: WAFileLibrary' , self model name , ' / #mainCss'.
 	class class
 		compile:
 			'initialize
-	self registerToDeployment: ''' , aBLPhase name , ''''.
+	(self registerToDeployment: ''' , aBLPhase name , ''') addLibrary: WAFileLibrary' , self model name.
 	class
 		compile:
 			'renderContentOn: html  
