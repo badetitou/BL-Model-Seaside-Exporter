@@ -185,7 +185,22 @@ BLModelExporterSeaside >> visitBLUIGrid: aBLUIGrid [
 
 { #category : #visiting }
 BLModelExporterSeaside >> visitBLUIHorizontalPanel: aBLUIHorizontalPanel [
-	^ aBLUIHorizontalPanel widgets flatCollect: [ :widget | (self visit: widget) ]
+	| subset |
+	aBLUIHorizontalPanel widgets
+		ifEmpty: [ subset := 12 ]
+		ifNotEmpty: [ subset := 12 / aBLUIHorizontalPanel widgets size.
+			subset := subset < 1
+				ifTrue: [ 1 ]
+				ifFalse: [ subset floor ] ].
+	^ 'html
+		mdlGrid: ['
+		,
+			(aBLUIHorizontalPanel widgets
+				flatCollect: [ :widget | 
+					'html mdlCell size: ''' , subset asString
+						,
+							''';
+			with: [ ' , (self visit: widget) , ' ].' ]) , ' ].'
 ]
 
 { #category : #visiting }
@@ -228,7 +243,8 @@ BLModelExporterSeaside >> visitBLUILink: aBLUILink [
 
 { #category : #visiting }
 BLModelExporterSeaside >> visitBLUIPanel: aBLUIBLUIPanel [
-	^ aBLUIBLUIPanel widgets flatCollect: [ :widget | 'html mdlDiv with: [ ', (self visit: widget), ' ].' ]
+	^ aBLUIBLUIPanel widgets
+		flatCollect: [ :widget | 'html mdlDiv with: [ ' , (self visit: widget) , ' ].' ]
 ]
 
 { #category : #visiting }
