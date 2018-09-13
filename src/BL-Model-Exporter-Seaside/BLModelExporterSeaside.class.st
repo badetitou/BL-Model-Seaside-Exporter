@@ -139,13 +139,48 @@ BLModelExporterSeaside >> visitBLUIFieldset: aBLUIFieldset [
 		mdlTypographyTextLeft;
 		with: [ 
 			html mdlCardTitle
-				with: [ html mdlCardTitleText: ''' , (aBLUIFieldset parameters at: #title)
+				with: [ html mdlCardTitleText: ''' , (aBLUIFieldset parameters at: #title) protectPharoQuote
 		,
 			''' ].
 				
 			html mdlCardTextContainer: [ 
 				' , (aBLUIFieldset widgets flatCollect: [ :widget | self visit: widget ]) , ' 
 				] ].'
+]
+
+{ #category : #visiting }
+BLModelExporterSeaside >> visitBLUIFieldsetDynamic: aBLUIFieldsetDynamic [
+	^ 'html mdlCard
+		shadow: 2;
+		mdlTypographyTextLeft;
+		with: [ 
+			html mdlCardTitle
+				with: [ html mdlCardTitleText: ''' , (aBLUIFieldsetDynamic parameters at: #legend) protectPharoQuote
+		,
+			''' ].
+				
+			html mdlCardTextContainer: [ 
+				' , (aBLUIFieldsetDynamic widgets flatCollect: [ :widget | self visit: widget ]) , ' 
+				] ].'
+]
+
+{ #category : #visiting }
+BLModelExporterSeaside >> visitBLUIGrid: aBLUIGrid [
+	^ 'html
+		mdlGrid: [ ', (aBLUIGrid widgets flatCollect: [:widget | 'html mdlCell
+				class: ''grid'';
+				size: 12;
+				with: [ ', (self visit: widget),' ].
+				' ]), '].'.
+]
+
+{ #category : #visiting }
+BLModelExporterSeaside >> visitBLUIInputText: aBLUIInputText [
+	^ '	html
+		mdlTextFieldContainer: [ html mdlTextFieldLabel
+				for: html nextId;
+				with: ''Text...''.
+			html mdlTextFieldInput id: html lastId ]'
 ]
 
 { #category : #visiting }
@@ -158,7 +193,7 @@ BLModelExporterSeaside >> visitBLUILink: aBLUILink [
 	^ 'html mdlButton
 		rippleEffect;
 		with: ''',(aBLUILink parameters
-		at: #label),'''.'
+		at: #label) protectPharoQuote,'''.'
 ]
 
 { #category : #visiting }
