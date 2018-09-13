@@ -137,14 +137,19 @@ BLModelExporterSeaside >> visitBLUIFieldset: aBLUIFieldset [
 	^ 'html mdlCard
 		shadow: 2;
 		mdlTypographyTextLeft;
+		style: ''width: 100%; height: 100%; min-height: 100%'';
 		with: [ 
 			html mdlCardTitle
-				with: [ html mdlCardTitleText: ''' , (aBLUIFieldset parameters at: #title) protectPharoQuote
+			style: ''background: #d2e9fb'';
+				with: [ html mdlCardTitleText: '''
+		, (aBLUIFieldset parameters at: #title) protectPharoQuote
 		,
-			''' ].
+			'''].
 				
 			html mdlCardTextContainer: [ 
-				' , (aBLUIFieldset widgets flatCollect: [ :widget | self visit: widget ]) , ' 
+				' , (aBLUIFieldset widgets flatCollect: [ :widget | self visit: widget ])
+		,
+			' 
 				] ].'
 ]
 
@@ -153,14 +158,18 @@ BLModelExporterSeaside >> visitBLUIFieldsetDynamic: aBLUIFieldsetDynamic [
 	^ 'html mdlCard
 		shadow: 2;
 		mdlTypographyTextLeft;
+		style: ''width: 100%; height: 100%; min-height: 100%'';
 		with: [ 
 			html mdlCardTitle
-				with: [ html mdlCardTitleText: ''' , (aBLUIFieldsetDynamic parameters at: #legend) protectPharoQuote
+				with: [ html mdlCardTitleText: '''
+		, (aBLUIFieldsetDynamic parameters at: #legend) protectPharoQuote
 		,
 			''' ].
 				
 			html mdlCardTextContainer: [ 
-				' , (aBLUIFieldsetDynamic widgets flatCollect: [ :widget | self visit: widget ]) , ' 
+				' , (aBLUIFieldsetDynamic widgets flatCollect: [ :widget | self visit: widget ])
+		,
+			' 
 				] ].'
 ]
 
@@ -175,12 +184,28 @@ BLModelExporterSeaside >> visitBLUIGrid: aBLUIGrid [
 ]
 
 { #category : #visiting }
+BLModelExporterSeaside >> visitBLUIHorizontalPanel: aBLUIHorizontalPanel [
+	^ aBLUIHorizontalPanel widgets flatCollect: [ :widget | (self visit: widget) ]
+]
+
+{ #category : #visiting }
+BLModelExporterSeaside >> visitBLUIInputCheckbox: aBLUICheckbox [
+	^ 'html mdlCheckboxContainer
+		rippleEffect;
+		for: html nextId;
+		with: [ html mdlCheckbox
+				value: true;
+				id: html lastId.
+			html mdlCheckboxLabel: ''' , (aBLUICheckbox parameters at: #label) protectPharoQuote , ''' ].'
+]
+
+{ #category : #visiting }
 BLModelExporterSeaside >> visitBLUIInputText: aBLUIInputText [
 	^ '	html
 		mdlTextFieldContainer: [ html mdlTextFieldLabel
 				for: html nextId;
 				with: ''Text...''.
-			html mdlTextFieldInput id: html lastId ]'
+			html mdlTextFieldInput id: html lastId ].'
 ]
 
 { #category : #visiting }
@@ -189,16 +214,21 @@ BLModelExporterSeaside >> visitBLUILeaf: aBLUILeaf [
 ]
 
 { #category : #visiting }
-BLModelExporterSeaside >> visitBLUILink: aBLUILink [ 
-	^ 'html mdlButton
-		rippleEffect;
-		with: ''',(aBLUILink parameters
-		at: #label) protectPharoQuote,'''.'
+BLModelExporterSeaside >> visitBLUILink: aBLUILink [
+	^ 'html anchor'
+		,
+			(aBLUILink actions
+				ifNotEmpty: [ :actions | 
+					'
+			url: ''/', ((actions at: 1) call name),''';' ])
+		,
+			'
+		with: ''' , (aBLUILink parameters at: #label) protectPharoQuote , '''.'
 ]
 
 { #category : #visiting }
 BLModelExporterSeaside >> visitBLUIPanel: aBLUIBLUIPanel [
-	^ (aBLUIBLUIPanel widgets flatCollect: [ :widget | self visit: widget ])
+	^ aBLUIBLUIPanel widgets flatCollect: [ :widget | 'html mdlDiv with: [ ', (self visit: widget), ' ].' ]
 ]
 
 { #category : #visiting }

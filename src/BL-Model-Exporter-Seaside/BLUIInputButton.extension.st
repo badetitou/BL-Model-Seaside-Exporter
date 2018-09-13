@@ -5,5 +5,5 @@ BLUIInputButton >> exportCode [
 	^ 'html mdlButton
 		raised;
 		primaryColor;
-		with: ''Button'''
+		with: ''Button''.'
 ]

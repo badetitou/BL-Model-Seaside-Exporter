@@ -9,5 +9,5 @@ BLUIInputNumber >> exportCode [
 			html mdlTextFieldInput
 				id: html lastId;
 				pattern: ''-?[0-9]*(\.[0-9]+)?''.
-			html mdlTextFieldError: ''Input is not a number !'' ]'
+			html mdlTextFieldError: ''Input is not a number !'' ].'
 ]
