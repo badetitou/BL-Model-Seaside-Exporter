@@ -100,7 +100,16 @@ BLModelExporterSeaside >> prepareExport [
 
 { #category : #visiting }
 BLModelExporterSeaside >> visitBLPageMetier: aPageMetier [
-	^ aPageMetier widgets flatCollect: [ :widget | (self visit: widget), String crlf, String tab ]
+	aPageMetier metiers
+		ifNotEmpty: [ :metiers | 
+			^ 'html render: (MDLTabWidget new '
+				,
+					(metiers
+						flatCollect: [ :metier | 
+							'addTabNamed: ''' , metier title protectPharoQuote , ''' content: [' , (self visit: metier) , '];'
+								, String crlf , String tab ]) , 'yourself).' ]
+		ifEmpty: [ ^ aPageMetier widgets
+				flatCollect: [ :widget | (self visit: widget) , String crlf , String tab ] ]
 ]
 
 { #category : #visiting }
@@ -193,14 +202,18 @@ BLModelExporterSeaside >> visitBLUIHorizontalPanel: aBLUIHorizontalPanel [
 				ifTrue: [ 1 ]
 				ifFalse: [ subset floor ] ].
 	^ 'html
-		mdlGrid: ['
+		mdlGrid noSpacing;
+		with: ['
 		,
 			(aBLUIHorizontalPanel widgets
 				flatCollect: [ :widget | 
 					'html mdlCell size: ''' , subset asString
 						,
 							''';
-			with: [ ' , (self visit: widget) , ' ].' ]) , ' ].'
+			with: [ ' , (self visit: widget) , ' ].' ])
+		,
+			' ];
+	noSpacing.'
 ]
 
 { #category : #visiting }
