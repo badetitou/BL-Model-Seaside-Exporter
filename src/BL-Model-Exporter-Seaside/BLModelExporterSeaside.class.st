@@ -83,6 +83,20 @@ BLModelExporterSeaside >> exportCodeOfPageMetierOf: aBLPhase [
 ]
 
 { #category : #visiting }
+BLModelExporterSeaside >> generateCss [
+	| class |
+	class := WAFileLibrary
+		subclass: WAFileLibrary name , self model name
+		instanceVariableNames: ''
+		classVariableNames: ''
+		package: (self model name, '-Config').
+	class
+		compile:
+			'mainCss
+    ^ '''''
+]
+
+{ #category : #visiting }
 BLModelExporterSeaside >> getVisitSubWidgetOf: aWidget [
 	^ (aWidget widgets flatCollect: [:widget |  (self visit: widget) , String crlf, String tab])
 ]
@@ -124,6 +138,12 @@ BLModelExporterSeaside >> visitBLPhase: aBLPhase [
 		compile:
 			'initialize
     super initialize.'.
+	class
+		compile:
+			'updateRoot: anHtmlRoot
+		super updateRoot: anHtmlRoot.
+		anHtmlRoot stylesheet 
+			url: WAFileLibrary', self model name,'/ #mainCss'.
 	class class
 		compile:
 			'initialize
@@ -272,6 +292,7 @@ BLModelExporterSeaside >> visitBLWidget: aBLWidget [
 
 { #category : #visiting }
 BLModelExporterSeaside >> visitMooseModel: aMooseModel [
-	aMooseModel allBLPhase do: [ :phase | self visit: phase ].
+	self generateCss.
+	aMooseModel allBLPhase do: [ :phase | self visit: phase ]
 	"aMooseModel allBLPageMetier do: [ :pageMetier | self visit: pageMetier ]."
 ]
