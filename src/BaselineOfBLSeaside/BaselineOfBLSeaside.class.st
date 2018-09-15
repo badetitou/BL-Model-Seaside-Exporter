@@ -17,22 +17,28 @@ BaselineOfBLSeaside >> baseline: spec [
 
 { #category : #baselines }
 BaselineOfBLSeaside >> defineDependencies: spec [
-			spec
-				baseline: 'MaterialDesignLite'
-				with: [ spec repository: 'github://DuneSt/MaterialDesignLite:master/src' ].
+	spec
+		baseline: 'MaterialDesignLite'
+		with: [ spec repository: 'github://DuneSt/MaterialDesignLite:master/src' ].
+	spec
+		baseline: 'BLToolkit'
+		with: [ spec
+				loads: 'core-extented';
+				repository: 'github://badetitou/BL-Toolkit/:src' ]
 ]
 
 { #category : #baselines }
 BaselineOfBLSeaside >> defineGroups: spec [
-	spec 
-		group: 'default' with: #('BL-Model-Exporter-Seaside' 'BL-Model-SeasideMDL' 'MaterialDesignLite') 
+	spec
+		group: 'default'
+		with: #('BL-Model-Exporter-Seaside')
 ]
 
 { #category : #baselines }
 BaselineOfBLSeaside >> definePackages: spec [
-	spec 
+	spec
 		repository: 'https://github.com/badetitou/BL-Model-Seaside-Exporter';
 		package: 'BaselineOfBLSeaside';
-		package: 'BL-Model-Exporter-Seaside' with: [ spec requires: #('BL-Model-SeasideMDL') ];
-		package: 'BL-Model-SeasideMDL'
+		package: 'BL-Model-Exporter-Seaside'
+			with: [ spec requires: #('BL-Model-SeasideMDL' 'BLToolkit' 'MaterialDesignLite') ]
 ]
