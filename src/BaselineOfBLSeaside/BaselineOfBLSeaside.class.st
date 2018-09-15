@@ -40,5 +40,5 @@ BaselineOfBLSeaside >> definePackages: spec [
 		repository: 'https://github.com/badetitou/BL-Model-Seaside-Exporter';
 		package: 'BaselineOfBLSeaside';
 		package: 'BL-Model-Exporter-Seaside'
-			with: [ spec requires: #('BL-Model-SeasideMDL' 'BLToolkit' 'MaterialDesignLite') ]
+			with: [ spec requires: #('BLToolkit' 'MaterialDesignLite') ]
 ]
