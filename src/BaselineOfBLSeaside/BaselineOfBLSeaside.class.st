@@ -24,7 +24,7 @@ BaselineOfBLSeaside >> defineDependencies: spec [
 		baseline: 'BLToolkit'
 		with: [ spec
 				loads: 'core-extented';
-				repository: 'github://badetitou/BL-Toolkit/:src' ]
+				repository: 'github://badetitou/BL-Toolkit:master/src' ]
 ]
 
 { #category : #baselines }
