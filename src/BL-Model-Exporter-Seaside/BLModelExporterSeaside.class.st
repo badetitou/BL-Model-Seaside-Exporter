@@ -14,7 +14,7 @@ BLModelExporterSeaside >> createSubPageMetierOf: aBLPhase. [
 	aBLPhase pageMetiers do: [ :metier |
 		| class | 
 		class := MDLApplication
-		subclass: (self acceptedNameForPageMetier: metier)
+		subclass: (self prefix, (self acceptedNameForPageMetier: metier))
 		instanceVariableNames: ''
 		classVariableNames: ''
 		package: self model name.
@@ -78,8 +78,21 @@ BLModelExporterSeaside >> exportCodeOfPageMetierOf: aBLPhase [
 	aBLPhase hasMultiplePageMetier
 		ifTrue: [ ^ self exportCodeOfMultiplePageMetier: aBLPhase ].
 	aBLPhase hasNoPageMetier
-		ifTrue: [ ^ '' ].
+		ifTrue: [ ^ self exportCodeOfWithoutPageMetier: aBLPhase ].
 	^ self exportCodeOfOnePageMetier: aBLPhase
+]
+
+{ #category : #visiting }
+BLModelExporterSeaside >> exportCodeOfWithoutPageMetier: aBLPhase [
+	^ '
+		html mdlLayout
+		fixedHeader;
+		with: [ html
+				mdlLayoutHeader: [ html
+						mdlLayoutHeaderRow: [ html mdlLayoutTitle: ''No title'' ] ]. 
+		html mdlLayoutContent: [
+			' , (aBLPhase widgets flatCollect: [:widget | self visit: widget ]) , '
+			] ].'
 ]
 
 { #category : #visiting }
@@ -128,6 +141,11 @@ BLModelExporterSeaside >> postExport [
 ]
 
 { #category : #accessing }
+BLModelExporterSeaside >> prefix [
+	^ 'Exported'
+]
+
+{ #category : #accessing }
 BLModelExporterSeaside >> prepareExport [
 	
 	RPackageOrganizer default createPackageNamed: model name
@@ -151,7 +169,7 @@ BLModelExporterSeaside >> visitBLPageMetier: aPageMetier [
 BLModelExporterSeaside >> visitBLPhase: aBLPhase [
 	| class |
 	class := MDLApplication
-		subclass: aBLPhase name
+		subclass: (self prefix, aBLPhase name)
 		instanceVariableNames: ''
 		classVariableNames: ''
 		package: self model name.
@@ -252,8 +270,7 @@ BLModelExporterSeaside >> visitBLUIHorizontalPanel: aBLUIHorizontalPanel [
 							''';
 			with: [ ' , (self visit: widget) , ' ].' ])
 		,
-			' ];
-	noSpacing.'
+			' ].'
 ]
 
 { #category : #visiting }
