@@ -274,6 +274,16 @@ BLModelExporterSeaside >> visitBLUIHorizontalPanel: aBLUIHorizontalPanel [
 ]
 
 { #category : #visiting }
+BLModelExporterSeaside >> visitBLUIInputButton: aBLUIInputButton [
+	^ 'html mdlButton
+		raised;
+		primaryColor;
+		with: '''
+		, ((aBLUIInputButton attributes select: [:attribute | attribute isKindOf: BLUILabel ])flatCollect: [ :attribute | self visit: attribute ])
+		, '''.'
+]
+
+{ #category : #visiting }
 BLModelExporterSeaside >> visitBLUIInputCheckbox: aBLUICheckbox [
 	^ 'html mdlCheckboxContainer
 		rippleEffect;
@@ -291,6 +301,11 @@ BLModelExporterSeaside >> visitBLUIInputText: aBLUIInputText [
 				for: html nextId;
 				with: ''Text...''.
 			html mdlTextFieldInput id: html lastId ].'
+]
+
+{ #category : #visiting }
+BLModelExporterSeaside >> visitBLUILabel: aBLUILabel [
+	^ aBLUILabel text
 ]
 
 { #category : #visiting }
