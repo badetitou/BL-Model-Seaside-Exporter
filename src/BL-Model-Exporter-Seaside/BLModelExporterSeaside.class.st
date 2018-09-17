@@ -302,12 +302,24 @@ BLModelExporterSeaside >> visitBLUIInputButton: aBLUIInputButton [
 { #category : #visiting }
 BLModelExporterSeaside >> visitBLUIInputCheckbox: aBLUICheckbox [
 	^ 'html mdlCheckboxContainer
-		rippleEffect;
+		rippleEffect;'
+		,
+			((aBLUICheckbox attributes select: [ :attribute | attribute isKindOf: BLUITitle ])
+				ifNotEmpty: [ :col | 'title: ''' , (self visit: (col at: 1)) , ''';' , String crlf , String tab ])
+		,
+			'
 		for: html nextId;
-		with: [ html mdlCheckbox
-				value: true;
+		with: [ html mdlCheckbox '
+		,
+			((aBLUICheckbox attributes select: [ :attribute | (attribute isKindOf: BLUIDisabled) and: [ attribute disabled ] ])
+				ifNotEmpty: [ :col | (self visit: (col at: 1)) , ';' ])
+		,
+			'
 				id: html lastId.
-			html mdlCheckboxLabel: ''' , (aBLUICheckbox parameters at: #label) protectPharoQuote , ''' ].'
+			html mdlCheckboxLabel: '''
+		,
+			((aBLUICheckbox attributes select: [ :attribute | attribute isKindOf: BLUILabel ])
+				flatCollect: [ :attribute | self visit: attribute ]) , ''' ].'
 ]
 
 { #category : #visiting }
