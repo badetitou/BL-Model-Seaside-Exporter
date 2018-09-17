@@ -299,7 +299,7 @@ BLModelExporterSeaside >> visitBLUIInputText: aBLUIInputText [
 	^ '	html
 		mdlTextFieldContainer: [ html mdlTextFieldLabel
 				for: html nextId;
-				with: ''Text...''.
+				with: ''',((aBLUIInputText attributes select: [:attribute | attribute isKindOf: BLUIPlaceholder]) flatCollect: [ :attribute | self visit: attribute ]),'''.
 			html mdlTextFieldInput id: html lastId ].'
 ]
 
@@ -334,7 +334,20 @@ BLModelExporterSeaside >> visitBLUIPanel: aBLUIBLUIPanel [
 
 { #category : #visiting }
 BLModelExporterSeaside >> visitBLUIParagraph: aBLUIParagraph [
-	^ 'html paragraph: [ ', (self getVisitSubWidgetOf: aBLUIParagraph ), '].'
+	^ 'html paragraph: [ html text: '''
+		,
+			((aBLUIParagraph attributes select: [ :attribute | attribute isKindOf: BLUILabel ])
+				flatCollect: [ :attribute | self visit: attribute ]) , '''].'
+]
+
+{ #category : #visiting }
+BLModelExporterSeaside >> visitBLUIPlaceholder: aBLUIPlaceholder [
+	^ aBLUIPlaceholder text protectPharoQuote 
+]
+
+{ #category : #visiting }
+BLModelExporterSeaside >> visitBLUIValue: aBLUIValue [
+	^ aBLUIValue text protectPharoQuote 
 ]
 
 { #category : #visiting }
