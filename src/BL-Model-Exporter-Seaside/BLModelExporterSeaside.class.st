@@ -200,6 +200,13 @@ BLModelExporterSeaside >> visitBLPhase: aBLPhase [
 ]
 
 { #category : #visiting }
+BLModelExporterSeaside >> visitBLUIDisabled: aBLUIDisabled [
+	aBLUIDisabled disabled
+		ifTrue: [ ^ 'disabled' ]
+		ifFalse: [ ^ '' ]
+]
+
+{ #category : #visiting }
 BLModelExporterSeaside >> visitBLUIFieldset: aBLUIFieldset [
 	^ 'html mdlCard
 		shadow: 2;
@@ -299,8 +306,20 @@ BLModelExporterSeaside >> visitBLUIInputText: aBLUIInputText [
 	^ '	html
 		mdlTextFieldContainer: [ html mdlTextFieldLabel
 				for: html nextId;
-				with: ''',((aBLUIInputText attributes select: [:attribute | attribute isKindOf: BLUIPlaceholder]) flatCollect: [ :attribute | self visit: attribute ]),'''.
-			html mdlTextFieldInput id: html lastId ].'
+				with: '''
+		,
+			((aBLUIInputText attributes select: [ :attribute | attribute isKindOf: BLUIPlaceholder ])
+				flatCollect: [ :attribute | self visit: attribute ])
+		,
+			'''.
+			html mdlTextFieldInput id: html lastId; value: '''
+		,
+			((aBLUIInputText attributes select: [ :attribute | attribute isKindOf: BLUIValue ])
+				flatCollect: [ :attribute | self visit: attribute ]) , '''	'
+		,
+			((aBLUIInputText attributes select: [ :attribute | (attribute isKindOf: BLUIDisabled) and: [ attribute disabled ] ])
+				ifNotEmpty: [ :col | ';' , String crlf , String tab , (self visit: (col at: 1)) ])
+		, ' ].'
 ]
 
 { #category : #visiting }
