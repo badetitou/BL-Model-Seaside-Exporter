@@ -283,11 +283,20 @@ BLModelExporterSeaside >> visitBLUIHorizontalPanel: aBLUIHorizontalPanel [
 { #category : #visiting }
 BLModelExporterSeaside >> visitBLUIInputButton: aBLUIInputButton [
 	^ 'html mdlButton
-		raised;
-		primaryColor;
+		rippleEffect;
+		'
+		,
+			((aBLUIInputButton attributes select: [ :attribute | (attribute isKindOf: BLUIDisabled) and: [ attribute disabled ] ])
+				ifNotEmpty: [ :col | (self visit: (col at: 1)) , ';' ])
+		,
+			((aBLUIInputButton attributes select: [ :attribute | attribute isKindOf: BLUITitle ])
+				ifNotEmpty: [ :col | 'title: ''' , (self visit: (col at: 1)) , ''';' , String crlf , String tab ])
+		,
+			'
 		with: '''
-		, ((aBLUIInputButton attributes select: [:attribute | attribute isKindOf: BLUILabel ]) flatCollect: [ :attribute | self visit: attribute ])
-		, '''.'
+		,
+			((aBLUIInputButton attributes select: [ :attribute | attribute isKindOf: BLUILabel ])
+				flatCollect: [ :attribute | self visit: attribute ]) , '''.'
 ]
 
 { #category : #visiting }
@@ -362,6 +371,13 @@ BLModelExporterSeaside >> visitBLUIParagraph: aBLUIParagraph [
 { #category : #visiting }
 BLModelExporterSeaside >> visitBLUIPlaceholder: aBLUIPlaceholder [
 	^ aBLUIPlaceholder text protectPharoQuote 
+]
+
+{ #category : #visiting }
+BLModelExporterSeaside >> visitBLUITitle: aBLUITitle [
+	^ aBLUITitle
+		text
+		protectPharoQuote
 ]
 
 { #category : #visiting }
