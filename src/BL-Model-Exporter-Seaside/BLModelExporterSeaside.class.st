@@ -279,7 +279,7 @@ BLModelExporterSeaside >> visitBLUIInputButton: aBLUIInputButton [
 		raised;
 		primaryColor;
 		with: '''
-		, ((aBLUIInputButton attributes select: [:attribute | attribute isKindOf: BLUILabel ])flatCollect: [ :attribute | self visit: attribute ])
+		, ((aBLUIInputButton attributes select: [:attribute | attribute isKindOf: BLUILabel ]) flatCollect: [ :attribute | self visit: attribute ])
 		, '''.'
 ]
 
@@ -305,7 +305,7 @@ BLModelExporterSeaside >> visitBLUIInputText: aBLUIInputText [
 
 { #category : #visiting }
 BLModelExporterSeaside >> visitBLUILabel: aBLUILabel [
-	^ aBLUILabel text
+	^ aBLUILabel text protectPharoQuote 
 ]
 
 { #category : #visiting }
