@@ -323,6 +323,19 @@ BLModelExporterSeaside >> visitBLUIInputCheckbox: aBLUICheckbox [
 ]
 
 { #category : #visiting }
+BLModelExporterSeaside >> visitBLUIInputDate: aBLUIInputDate [
+	^ 'html dateInput.'
+]
+
+{ #category : #visiting }
+BLModelExporterSeaside >> visitBLUIInputRange: aBLUIInputRange [
+	^ '	html mdlSlider
+		min: 0;
+		max: 100;
+		value: 0.'
+]
+
+{ #category : #visiting }
 BLModelExporterSeaside >> visitBLUIInputText: aBLUIInputText [
 	^ '	html
 		mdlTextFieldContainer: [ html mdlTextFieldLabel
@@ -364,6 +377,19 @@ BLModelExporterSeaside >> visitBLUILink: aBLUILink [
 		,
 			'
 		with: ''' , (aBLUILink parameters at: #label) protectPharoQuote , '''.'
+]
+
+{ #category : #visiting }
+BLModelExporterSeaside >> visitBLUIList: aBLUIList [
+	^ '
+	html mdlTable
+		shadow: 2;
+		selectable;
+		with: [ html
+				tableHead: [ html
+						tableRow: [ html mdlTableHeading: ''Head1''.
+							html tableHeading: ''Head2''. ] ].
+			 ].'
 ]
 
 { #category : #visiting }
