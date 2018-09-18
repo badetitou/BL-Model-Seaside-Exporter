@@ -12,5 +12,5 @@ BLPageMetier >> writeCodeWith: anExporter [
 	'
 						,
 							(self widgets
-								flatCollect: [ :widget | widget exportCode , String crlf , String tab ]) ]
+								flatCollect: [ :widget | (anExporter visit: widget) , String crlf , String tab ]) ]
 ]

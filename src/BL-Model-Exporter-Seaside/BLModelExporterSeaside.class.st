@@ -200,6 +200,11 @@ BLModelExporterSeaside >> visitBLPhase: aBLPhase [
 ]
 
 { #category : #visiting }
+BLModelExporterSeaside >> visitBLUIContainer: aBLUIContainer [
+	^ aBLUIContainer widgets flatCollect: [ :widget | (self visit: widget), String crlf, String tab ]
+]
+
+{ #category : #visiting }
 BLModelExporterSeaside >> visitBLUIDisabled: aBLUIDisabled [
 	aBLUIDisabled disabled
 		ifTrue: [ ^ 'disabled' ]
@@ -323,8 +328,45 @@ BLModelExporterSeaside >> visitBLUIInputCheckbox: aBLUICheckbox [
 ]
 
 { #category : #visiting }
+BLModelExporterSeaside >> visitBLUIInputColor: aBLUIInputColor [
+	^ 'html colorInput.'
+]
+
+{ #category : #visiting }
 BLModelExporterSeaside >> visitBLUIInputDate: aBLUIInputDate [
 	^ 'html dateInput.'
+]
+
+{ #category : #visiting }
+BLModelExporterSeaside >> visitBLUIInputDatetimeLocal: aBBLUIInputDatetimeLocal [
+	^ 'html dateTimeLocalInput.'.
+]
+
+{ #category : #visiting }
+BLModelExporterSeaside >> visitBLUIInputEmail: aBBLUIInputEmail [
+	^ 'html emailInput.'
+]
+
+{ #category : #visiting }
+BLModelExporterSeaside >> visitBLUIInputMonth: aBLUIInputMonth [
+	^ 'html monthInput.'
+]
+
+{ #category : #visiting }
+BLModelExporterSeaside >> visitBLUIInputNumber: aBLUIInputNumber [
+	^  'html
+		mdlTextFieldContainer: [ html mdlTextFieldLabel
+				for: html nextId;
+				with: ''Number...''.
+			html mdlTextFieldInput
+				id: html lastId;
+				pattern: ''-?[0-9]*(\.[0-9]+)?''.
+			html mdlTextFieldError: ''Input is not a number !'' ].'
+]
+
+{ #category : #visiting }
+BLModelExporterSeaside >> visitBLUIInputRadio: aBLUIInputRadio [
+	^ 'html mdlRadioButton.'
 ]
 
 { #category : #visiting }
@@ -333,6 +375,16 @@ BLModelExporterSeaside >> visitBLUIInputRange: aBLUIInputRange [
 		min: 0;
 		max: 100;
 		value: 0.'
+]
+
+{ #category : #visiting }
+BLModelExporterSeaside >> visitBLUIInputSearch: aBLUIInputSearch [
+	^ 'html searchInput.'
+]
+
+{ #category : #visiting }
+BLModelExporterSeaside >> visitBLUIInputTel: aBLUIInputTel [
+	^ 'html telephoneInput.'
 ]
 
 { #category : #visiting }
@@ -354,6 +406,32 @@ BLModelExporterSeaside >> visitBLUIInputText: aBLUIInputText [
 			((aBLUIInputText attributes select: [ :attribute | (attribute isKindOf: BLUIDisabled) and: [ attribute disabled ] ])
 				ifNotEmpty: [ :col | ';' , String crlf , String tab , (self visit: (col at: 1)) ])
 		, ' ].'
+]
+
+{ #category : #visiting }
+BLModelExporterSeaside >> visitBLUIInputTextArea: aBLUIInputTextArea [
+	^ 'html
+		mdlTextFieldContainer: [ html mdlTextFieldLabel
+				for: html nextId;
+				with: ''Text lines...''.
+			html mdlTextArea
+				id: html lastId;
+				rows: 3 ].'
+]
+
+{ #category : #visiting }
+BLModelExporterSeaside >> visitBLUIInputTime: aBLUIInputTime [
+	^ 'html timeInput5.'
+]
+
+{ #category : #visiting }
+BLModelExporterSeaside >> visitBLUIInputUrl: aBLUIInputUrl [
+	^ 'html urlInput.'
+]
+
+{ #category : #visiting }
+BLModelExporterSeaside >> visitBLUIInputWeek: aBLUIInputWeek [
+	^ 'html weekInput.'
 ]
 
 { #category : #visiting }
@@ -425,7 +503,7 @@ BLModelExporterSeaside >> visitBLUIValue: aBLUIValue [
 
 { #category : #visiting }
 BLModelExporterSeaside >> visitBLWidget: aBLWidget [
-	^ aBLWidget exportCode
+	^ ''
 ]
 
 { #category : #visiting }
