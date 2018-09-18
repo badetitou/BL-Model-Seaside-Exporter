@@ -116,11 +116,20 @@ BLModelExporterSeaside >> generateCss [
     padding-left: 5px;
     text-align: left;
     vertical-align: middle;
-    height: 16px;
+    height: 18px;
 }
 
 .mdl-card__title {
 	padding: 0px 0px 0px 5px;
+}
+
+.mdl-card__supporting-text { 
+	margin: 3px 8px 3px 8px;
+	padding: 0px;
+}
+
+.mdl-mini-footer { 
+	padding: 0px 17px;
 }
 
 body {
@@ -128,6 +137,12 @@ body {
 	font-family: "Verdana";
 	font-size: 10px;
 	margin: 0px 0px 0px 0px;
+}
+
+p { 
+    margin: 0;
+	line-height: inherit;
+	
 }
 
 .NIVEAU1 {
@@ -270,6 +285,17 @@ body {
 	color: #C91126;
 }
 
+a { 
+	font-size: 0.7rem;
+    padding: 0;
+    cursor: pointer;
+    color: #1D417D;
+    font-family: "Verdana";
+    font-weight: bold;
+    font-size: 10px;
+    text-decoration: underline; 
+}
+
 '''
 ]
 
@@ -402,12 +428,27 @@ BLModelExporterSeaside >> visitBLUIFieldsetDynamic: aBLUIFieldsetDynamic [
 
 { #category : #visiting }
 BLModelExporterSeaside >> visitBLUIGrid: aBLUIGrid [
-	^ 'html
-		mdlGrid: [ ', (aBLUIGrid widgets flatCollect: [:widget | 'html mdlCell
+	| text |
+	text := ''.
+	1 to: aBLUIGrid widgets size do: [ :number | 
+		| subset |
+		(aBLUIGrid atLevel: number)
+			ifEmpty: [ subset := 12 ]
+			ifNotEmpty: [ subset := 12 / (aBLUIGrid atLevel: number) size.
+				subset := subset < 1
+					ifTrue: [ 1 ]
+					ifFalse: [ subset floor ] ].
+		text := text , (aBLUIGrid atLevel: number)
+			flatCollect: [ :widget | 
+				'html mdlCell
 				class: ''grid'';
-				size: 12;
-				with: [ ', (self visit: widget),' ].
-				' ]), '].'.
+				size: ' , subset
+					,
+						';
+				with: [ ' , (self visit: widget) , ' ].' , String crlf ] ].
+	^ 'html
+		mdlGrid noSpacing;
+		with: [ ' , text , ' ].'
 ]
 
 { #category : #visiting }
