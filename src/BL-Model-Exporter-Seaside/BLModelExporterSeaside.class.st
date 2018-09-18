@@ -107,10 +107,6 @@ BLModelExporterSeaside >> generateCss [
 		compile:
 			'mainCss
     ^ ''
-body {
-  font-family: "Open Sans", sans-serif;
-}
-
 .mdl-card__title-text {
     color: #1D417D;
     cursor: default;
@@ -127,7 +123,154 @@ body {
 	padding: 0px 0px 0px 5px;
 }
 
-'' '
+body {
+	color: black;
+	font-family: "Verdana";
+	font-size: 10px;
+	margin: 0px 0px 0px 0px;
+}
+
+.NIVEAU1 {
+	font-family: "Verdana";
+	font-weight: bold;
+	font-size: 10px;
+	color: #1D417D;
+}
+
+.BLLabelNiveau1Selected {
+	background-color: #1D417D;
+	font-family: "Verdana";
+	font-weight: bold;
+	font-size: 10px;
+	color: #FFFFFF;
+}
+
+.NIVEAU2 {
+	font-family: "Verdana";
+	font-weight: normal;
+	font-size: 10px;
+	color: #1D417D;
+}
+
+.BLLabelNiveau2Selected {
+	background-color: #1D417D;
+	font-family: "Verdana";
+	font-weight: normal;
+	font-size: 10px;
+	color: #FFFFFF;
+}
+
+.BLLabel-disabled {
+/* color: gray; */
+}
+
+.NIVEAU1LIST {
+	font-family: "Verdana";
+	font-weight: bold;
+	font-size: 10px;
+	color: #1D417D;
+}
+
+.NIVEAU2LIST {
+	font-family: "Verdana";
+	font-weight: bold;
+	font-size: 10px;
+	color: #000000;
+}
+
+.BLLabelListNiveau2Italic {
+	font-family: "Verdana";
+	font-weight: bold;
+	font-size: 10px;
+	color: #000000;
+	font-style: italic;
+}
+
+.NIVEAU3LIST {
+	font-family: "Verdana";
+	font-size: 10px;
+	font-weight: normal;
+	color: #000000;
+}
+
+.NIVEAU3LISTROUGE {
+	font-family: "Verdana";
+	font-size: 10px;
+	font-weight: normal;
+	color: #DB1D6D;
+	text-align: left;
+}
+
+.NIVEAU3LISTVERT {
+	font-family: "Verdana";
+	font-size: 10px;
+	font-weight: normal;
+	color: #00A157;
+	text-align: left;
+}
+
+.NIVEAU3LISTMARRON {
+	font-family: "Verdana";
+	font-size: 10px;
+	font-weight: normal;
+	color: #734817;
+	text-align: left;
+}
+
+.NIVEAU3LISTLAVANDE {
+	font-family: "Verdana";
+	font-size: 10px;
+	font-weight: normal;
+	color: #793EA0;
+	text-align: left;
+}
+
+.NIVEAU3LISTVERTCLAIR {
+	font-family: "Verdana";
+	font-size: 10px;
+	font-weight: normal;
+	color: #03B6AB;
+	text-align: left;
+}
+
+.NIVEAU3LISTVERTFONCE {
+	font-family: "Verdana";
+	font-size: 10px;
+	font-weight: normal;
+	color: #009045;
+	text-align: left;
+}
+
+.NIVEAU2LISTCLIGNOTANT {
+	font-family: "Verdana";
+	font-size: 10px;
+	font-weight: bold;
+	text-decoration: blink;
+}
+
+.BLLabelNiveauValeur {
+	font-family: "Verdana";
+	font-size: 10px;
+	color: #000000;
+	font-weight: normal;
+}
+
+.MANDATORTY_CHARACTER {
+	font-family: "Verdana";
+	font-weight: bold;
+	font-size: 10px;
+	color: #C91126;
+	vertical-align: bottom;
+}
+
+.WARNING_STYLE {
+	font-family: "Verdana";
+	font-weight: bold;
+	font-size: 10px;
+	color: #C91126;
+}
+
+'''
 ]
 
 { #category : #visiting }
@@ -197,6 +340,11 @@ BLModelExporterSeaside >> visitBLPhase: aBLPhase [
 				mdlMiniFooterLeftSection: [ html mdlLogo: ''Berger-Levrault''.
 					html
 						mdlMiniFooterLinkList: [ html listItem: [ html anchor: ''By Benoît "Badetitou" Verhaeghe'' ] ] ] ]'
+]
+
+{ #category : #visiting }
+BLModelExporterSeaside >> visitBLUIClass: aBLUIClass [
+	^ aBLUIClass text
 ]
 
 { #category : #visiting }
@@ -499,7 +647,9 @@ BLModelExporterSeaside >> visitBLUIPanel: aBLUIBLUIPanel [
 
 { #category : #visiting }
 BLModelExporterSeaside >> visitBLUIParagraph: aBLUIParagraph [
-	^ 'html paragraph: [ html text: '''
+	^ 'html paragraph ',
+	((aBLUIParagraph attributes select: [ :attribute | attribute isKindOf: BLUIClass ]) ifNotEmpty: [ :collectionOfClass | 'class: ''', (collectionOfClass flatCollect: [ :attribute | self visit: attribute ]) , ''';', String crlf, String tab ] )
+	,'with: [ html text: '''
 		,
 			((aBLUIParagraph attributes select: [ :attribute | attribute isKindOf: BLUILabel ])
 				flatCollect: [ :attribute | self visit: attribute ]) , '''].'
