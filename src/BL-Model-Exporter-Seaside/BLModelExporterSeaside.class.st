@@ -6,7 +6,7 @@ Class {
 
 { #category : #visiting }
 BLModelExporterSeaside >> acceptedNameForPageMetier: aPageMetier [
-	^ (aPageMetier name splitOn: ':') last
+	^ self prefix , ((aPageMetier name splitOn: ':') last)
 ]
 
 { #category : #visiting }
@@ -14,7 +14,7 @@ BLModelExporterSeaside >> createSubPageMetierOf: aBLPhase. [
 	aBLPhase pageMetiers do: [ :metier |
 		| class | 
 		class := MDLApplication
-		subclass: (self prefix, (self acceptedNameForPageMetier: metier))
+		subclass: (self acceptedNameForPageMetier: metier)
 		instanceVariableNames: ''
 		classVariableNames: ''
 		package: self model name.
