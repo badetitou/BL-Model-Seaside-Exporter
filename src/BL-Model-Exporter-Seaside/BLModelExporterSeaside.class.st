@@ -366,7 +366,16 @@ BLModelExporterSeaside >> visitBLUIInputNumber: aBLUIInputNumber [
 
 { #category : #visiting }
 BLModelExporterSeaside >> visitBLUIInputRadio: aBLUIInputRadio [
-	^ 'html mdlRadioButton.'
+	^ 'html mdlRadioContainer
+		rippleEffect;
+		for: html nextId;
+		with: [ html mdlRadioButton
+				beChecked;
+				attributeAt: ''name'' put: ''options'';
+				id: html lastId.
+			html mdlRadioLabel: ''',
+			((aBLUIInputRadio attributes select: [ :attribute | attribute isKindOf: BLUILabel ])
+				flatCollect: [ :attribute | self visit: attribute ]) , ''' ]'
 ]
 
 { #category : #visiting }
