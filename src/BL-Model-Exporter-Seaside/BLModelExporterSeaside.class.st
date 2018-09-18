@@ -371,7 +371,9 @@ BLModelExporterSeaside >> visitBLUIInputRadio: aBLUIInputRadio [
 		for: html nextId;
 		with: [ html mdlRadioButton
 				beChecked;
-				attributeAt: ''name'' put: ''options'';
+				attributeAt: ''name'' put: ''',
+			((aBLUIInputRadio attributes select: [ :attribute | attribute isKindOf: BLUIName ])
+				flatCollect: [ :attribute | self visit: attribute ]) ,''';
 				id: html lastId.
 			html mdlRadioLabel: ''',
 			((aBLUIInputRadio attributes select: [ :attribute | attribute isKindOf: BLUILabel ])
@@ -477,6 +479,11 @@ BLModelExporterSeaside >> visitBLUIList: aBLUIList [
 						tableRow: [ html mdlTableHeading: ''Head1''.
 							html tableHeading: ''Head2''. ] ].
 			 ].'
+]
+
+{ #category : #visiting }
+BLModelExporterSeaside >> visitBLUIName: aBLUIName [
+	^ aBLUIName nameValue
 ]
 
 { #category : #visiting }
