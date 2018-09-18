@@ -348,6 +348,11 @@ BLModelExporterSeaside >> visitBLUIInputEmail: aBBLUIInputEmail [
 ]
 
 { #category : #visiting }
+BLModelExporterSeaside >> visitBLUIInputFile: aBLUIInputFile [
+	^ 'html fileUpload.'
+]
+
+{ #category : #visiting }
 BLModelExporterSeaside >> visitBLUIInputMonth: aBLUIInputMonth [
 	^ 'html monthInput.'
 ]
