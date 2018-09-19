@@ -619,7 +619,6 @@ BLModelExporterSeaside >> visitBLUIInputRadio: aBLUIInputRadio [
 		rippleEffect;
 		for: html nextId;
 		with: [ html mdlRadioButton
-				beChecked;
 				attributeAt: ''name'' put: ''',
 			((aBLUIInputRadio attributes select: [ :attribute | attribute isKindOf: BLUIName ])
 				flatCollect: [ :attribute | self visit: attribute ]) ,''';
