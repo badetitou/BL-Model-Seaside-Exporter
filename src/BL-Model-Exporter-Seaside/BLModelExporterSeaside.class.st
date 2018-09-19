@@ -119,6 +119,24 @@ BLModelExporterSeaside >> generateCss [
     height: 18px;
 }
 
+.mdl-textfield__input { 
+    font-family: "Verdana";
+    color: #000000;
+    white-space: nowrap;
+    background-color: white;
+    font-size: 10px;
+    height: 14px;
+    vertical-align: middle;
+    border-color: #A7D6F8;
+    border-style: solid;
+    border-width: 1px;
+    padding: 0 1px 0 0;
+}
+
+.mdl-textfield { 
+	padding: 0px;
+}
+
 .mdl-card__title {
 	padding: 0px 0px 0px 5px;
 }
