@@ -430,7 +430,7 @@ BLModelExporterSeaside >> visitBLUIFieldsetDynamic: aBLUIFieldsetDynamic [
 BLModelExporterSeaside >> visitBLUIGrid: aBLUIGrid [
 	| text |
 	text := ''.
-	1 to: aBLUIGrid widgets size do: [ :number | 
+	0 to: aBLUIGrid widgets size do: [ :number | 
 		| subset |
 		(aBLUIGrid atLevel: number)
 			ifEmpty: [ subset := 12 ]
@@ -438,14 +438,14 @@ BLModelExporterSeaside >> visitBLUIGrid: aBLUIGrid [
 				subset := subset < 1
 					ifTrue: [ 1 ]
 					ifFalse: [ subset floor ] ].
-		text := text , (aBLUIGrid atLevel: number)
-			flatCollect: [ :widget | 
+		text := text , ((aBLUIGrid atLevel: number)
+			associationsFlatCollect:  [ :associationWidgetPosition | 
 				'html mdlCell
 				class: ''grid'';
-				size: ' , subset
+				size: ' , subset asString
 					,
 						';
-				with: [ ' , (self visit: widget) , ' ].' , String crlf ] ].
+				with: [ ' , (self visit: associationWidgetPosition key) , ' ].' , String crlf ]) ].
 	^ 'html
 		mdlGrid noSpacing;
 		with: [ ' , text , ' ].'
