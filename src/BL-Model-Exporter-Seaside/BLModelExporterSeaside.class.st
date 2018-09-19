@@ -373,6 +373,16 @@ BLModelExporterSeaside >> prepareExport [
 	RPackageOrganizer default createPackageNamed: model name
 ]
 
+{ #category : #'private-accessing' }
+BLModelExporterSeaside >> styleForWidget: aWidget [
+	^ 'style: '''
+		,((aWidget attributes select: [ :attribute | attribute isKindOf: BLUIWidth ])
+				ifNotEmpty: [ :col | 'width: ',(self visit: (col at: 1)) , ';' ]),
+			((aWidget attributes select: [ :attribute | attribute isKindOf: BLUIHeight ])
+				ifNotEmpty: [ :col | 'height: ',(self visit: (col at: 1)) , ';' ])
+		,''';'
+]
+
 { #category : #visiting }
 BLModelExporterSeaside >> visitBLPageMetier: aPageMetier [
 	aPageMetier metiers
@@ -444,18 +454,13 @@ BLModelExporterSeaside >> visitBLUIFieldset: aBLUIFieldset [
 	^ 'html mdlCard
 		shadow: 2;
 		mdlTypographyTextLeft;
-		style: '''
-		,((aBLUIFieldset attributes select: [ :attribute | attribute isKindOf: BLUIWidth ])
-				ifNotEmpty: [ :col | 'width: ',(self visit: (col at: 1)) , ';' ]),
-			((aBLUIFieldset attributes select: [ :attribute | attribute isKindOf: BLUIHeight ])
-				ifNotEmpty: [ :col | 'height: ',(self visit: (col at: 1)) , ';' ])
-		,
-			''';
+		', (self styleForWidget: aBLUIFieldset),'
 		with: [ 
 			html mdlCardTitle
 				style: ''background: #d2e9fb'';
 				with: [ html mdlCardTitleText: '''
-		, (aBLUIFieldset parameters at: #title) protectPharoQuote
+		, ((aBLUIFieldset attributes select: [ :attribute | attribute isKindOf: BLUITitle  ])
+				ifNotEmpty: [ :col | (self visit: (col at: 1)) ])
 		,
 			'''].
 				
@@ -470,18 +475,14 @@ BLModelExporterSeaside >> visitBLUIFieldset: aBLUIFieldset [
 BLModelExporterSeaside >> visitBLUIFieldsetDynamic: aBLUIFieldsetDynamic [
 	^ 'html mdlCard
 		shadow: 2;
-		mdlTypographyTextLeft;
-		style: '''
-		,((aBLUIFieldsetDynamic attributes select: [ :attribute | attribute isKindOf: BLUIWidth ])
-				ifNotEmpty: [ :col | 'width: ',(self visit: (col at: 1)) , ';' ]),
-			((aBLUIFieldsetDynamic attributes select: [ :attribute | attribute isKindOf: BLUIHeight ])
-				ifNotEmpty: [ :col | 'height: ',(self visit: (col at: 1)) , ';' ])
-		,''';
+		mdlTypographyTextLeft;'
+		, (self styleForWidget: aBLUIFieldsetDynamic),'
 		with: [ 
 			html mdlCardTitle
 				style: ''background: #d2e9fb'';
 				with: [ html mdlCardTitleText: '''
-		, (aBLUIFieldsetDynamic parameters at: #legend) protectPharoQuote
+		, ((aBLUIFieldsetDynamic attributes select: [ :attribute | attribute isKindOf: BLUITitle  ])
+				ifNotEmpty: [ :col | (self visit: (col at: 1)) ])
 		,
 			''' ].
 				
@@ -753,9 +754,10 @@ BLModelExporterSeaside >> visitBLUIName: aBLUIName [
 ]
 
 { #category : #visiting }
-BLModelExporterSeaside >> visitBLUIPanel: aBLUIBLUIPanel [
-	^ aBLUIBLUIPanel widgets
-		flatCollect: [ :widget | 'html mdlDiv with: [ ' , (self visit: widget) , ' ].' ]
+BLModelExporterSeaside >> visitBLUIPanel: aBLUIPanel [
+	^ aBLUIPanel widgets
+		flatCollect: [ :widget | 'html mdlDiv ', (self styleForWidget: aBLUIPanel), '
+			 with: [ ' , (self visit: widget) , ' ].' ]
 ]
 
 { #category : #visiting }
@@ -799,5 +801,4 @@ BLModelExporterSeaside >> visitBLWidget: aBLWidget [
 BLModelExporterSeaside >> visitMooseModel: aMooseModel [
 	self generateCss.
 	aMooseModel allBLPhase do: [ :phase | self visit: phase ]
-	"aMooseModel allBLPageMetier do: [ :pageMetier | self visit: pageMetier ]."
 ]
