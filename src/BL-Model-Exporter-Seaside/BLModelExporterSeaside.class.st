@@ -123,13 +123,48 @@ BLModelExporterSeaside >> generateCss [
 	padding: 0px 0px 0px 5px;
 }
 
+.mdl-card { 
+	margin-bottom: 12px;
+	margin-top: 5px;
+	width: 100%;
+   min-height: auto;
+}
+
 .mdl-card__supporting-text { 
 	margin: 3px 8px 3px 8px;
 	padding: 0px;
+	width: 100%;
 }
 
 .mdl-mini-footer { 
 	padding: 0px 17px;
+}
+
+main.mdl-layout__content { 
+	padding-left: 6px;
+	padding-right: 6px;
+	padding-top: 1px;
+	padding-bottom: 1px;
+}
+
+.mdl-button { 
+	text-transform: none;
+	font-size: 0.7rem;
+   padding: 0.05rem 0.05rem;
+   background-color: #c91126;
+   border-color: #c91126;
+   border-radius: 15px !important;
+	color: #fff;
+	line-height: normal;
+	height: 15px;
+	padding-left: 5px;
+   padding-right: 5px;
+
+   &[disabled] {
+     text-decoration:none;
+     background-color: #666666;
+     border-color: #666666;
+   }
 }
 
 body {
@@ -338,7 +373,7 @@ BLModelExporterSeaside >> visitBLPageMetier: aPageMetier [
 BLModelExporterSeaside >> visitBLPhase: aBLPhase [
 	| class |
 	class := MDLApplication
-		subclass: (self prefix, aBLPhase name)
+		subclass: self prefix , aBLPhase name
 		instanceVariableNames: ''
 		classVariableNames: ''
 		package: self model name.
@@ -365,7 +400,8 @@ BLModelExporterSeaside >> visitBLPhase: aBLPhase [
 		mdlMiniFooter: [ html
 				mdlMiniFooterLeftSection: [ html mdlLogo: ''Berger-Levrault''.
 					html
-						mdlMiniFooterLinkList: [ html listItem: [ html anchor: ''By Benoît "Badetitou" Verhaeghe'' ] ] ] ]'
+						mdlMiniFooterLinkList: [ html listItem: [ html anchor url: ''https://badetitou.github.io''; 
+								with: ''By Benoît "Badetitou" Verhaeghe'' ] ] ] ]'
 ]
 
 { #category : #visiting }
@@ -390,10 +426,16 @@ BLModelExporterSeaside >> visitBLUIFieldset: aBLUIFieldset [
 	^ 'html mdlCard
 		shadow: 2;
 		mdlTypographyTextLeft;
-		style: ''width: 100%; height: 100%; min-height: 100%'';
+		style: '''
+		,((aBLUIFieldset attributes select: [ :attribute | attribute isKindOf: BLUIWidth ])
+				ifNotEmpty: [ :col | 'width: ',(self visit: (col at: 1)) , ';' ]),
+			((aBLUIFieldset attributes select: [ :attribute | attribute isKindOf: BLUIHeight ])
+				ifNotEmpty: [ :col | 'height: ',(self visit: (col at: 1)) , ';' ])
+		,
+			''';
 		with: [ 
 			html mdlCardTitle
-			style: ''background: #d2e9fb'';
+				style: ''background: #d2e9fb'';
 				with: [ html mdlCardTitleText: '''
 		, (aBLUIFieldset parameters at: #title) protectPharoQuote
 		,
@@ -411,9 +453,15 @@ BLModelExporterSeaside >> visitBLUIFieldsetDynamic: aBLUIFieldsetDynamic [
 	^ 'html mdlCard
 		shadow: 2;
 		mdlTypographyTextLeft;
-		style: ''width: 100%; height: 100%; min-height: 100%'';
+		style: '''
+		,((aBLUIFieldsetDynamic attributes select: [ :attribute | attribute isKindOf: BLUIWidth ])
+				ifNotEmpty: [ :col | 'width: ',(self visit: (col at: 1)) , ';' ]),
+			((aBLUIFieldsetDynamic attributes select: [ :attribute | attribute isKindOf: BLUIHeight ])
+				ifNotEmpty: [ :col | 'height: ',(self visit: (col at: 1)) , ';' ])
+		,''';
 		with: [ 
 			html mdlCardTitle
+				style: ''background: #d2e9fb'';
 				with: [ html mdlCardTitleText: '''
 		, (aBLUIFieldsetDynamic parameters at: #legend) protectPharoQuote
 		,
@@ -438,17 +486,24 @@ BLModelExporterSeaside >> visitBLUIGrid: aBLUIGrid [
 				subset := subset < 1
 					ifTrue: [ 1 ]
 					ifFalse: [ subset floor ] ].
-		text := text , ((aBLUIGrid atLevel: number)
-			associationsFlatCollect:  [ :associationWidgetPosition | 
-				'html mdlCell
+		text := text
+			,
+				((aBLUIGrid atLevel: number)
+					associationsFlatCollect: [ :associationWidgetPosition | 
+						'html mdlCell
 				class: ''grid'';
 				size: ' , subset asString
-					,
-						';
+							,
+								';
 				with: [ ' , (self visit: associationWidgetPosition key) , ' ].' , String crlf ]) ].
 	^ 'html
-		mdlGrid noSpacing;
+		mdlGrid
 		with: [ ' , text , ' ].'
+]
+
+{ #category : #visiting }
+BLModelExporterSeaside >> visitBLUIHeight: aBLUIHeight [
+	^ aBLUIHeight text
 ]
 
 { #category : #visiting }
@@ -711,6 +766,11 @@ BLModelExporterSeaside >> visitBLUITitle: aBLUITitle [
 { #category : #visiting }
 BLModelExporterSeaside >> visitBLUIValue: aBLUIValue [
 	^ aBLUIValue text protectPharoQuote 
+]
+
+{ #category : #visiting }
+BLModelExporterSeaside >> visitBLUIWidth: aBLUIWidth [
+	^ aBLUIWidth text
 ]
 
 { #category : #visiting }
