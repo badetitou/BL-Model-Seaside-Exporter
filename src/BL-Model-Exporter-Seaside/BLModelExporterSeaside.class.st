@@ -395,13 +395,17 @@ BLModelExporterSeaside >> visitBLUIInputRadio: aBLUIInputRadio [
 		rippleEffect;
 		for: html nextId;
 		with: [ html mdlRadioButton
-				attributeAt: ''name'' put: ''',
+				attributeAt: ''name'' put: '''
+		,
 			((aBLUIInputRadio attributes select: [ :attribute | attribute isKindOf: BLUIName ])
-				flatCollect: [ :attribute | self visit: attribute ]) ,''';
+				flatCollect: [ :attribute | self visit: attribute ])
+		,
+			''';
 				id: html lastId.
-			html mdlRadioLabel: ''',
+			html mdlRadioLabel: '''
+		,
 			((aBLUIInputRadio attributes select: [ :attribute | attribute isKindOf: BLUILabel ])
-				flatCollect: [ :attribute | self visit: attribute ]) , ''' ]'
+				flatCollect: [ :attribute | self visit: attribute ]) , ''' ].'
 ]
 
 { #category : #visiting }
@@ -512,9 +516,13 @@ BLModelExporterSeaside >> visitBLUIName: aBLUIName [
 
 { #category : #visiting }
 BLModelExporterSeaside >> visitBLUIPanel: aBLUIPanel [
-	^ 'html mdlDiv ', (self styleForWidget: aBLUIPanel), '
-			with: [ ', (aBLUIPanel widgets
-		flatCollect: [ :widget | (self visit: widget) ]), ' ].'
+	^ 'html mdlDiv ' , (self styleForWidget: aBLUIPanel)
+		,
+			'
+			with: [ '
+		,
+			(aBLUIPanel widgets
+				flatCollect: [ :widget | 'html mdlDiv with: [' , (self visit: widget) , '].' , String crlf ]) , ' ].'
 ]
 
 { #category : #visiting }

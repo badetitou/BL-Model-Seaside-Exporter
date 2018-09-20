@@ -55,6 +55,7 @@ BLModelExporterSeasideCore >> generateCss [
 	margin-top: 5px;
 	width: 100%;
    min-height: auto;
+   border-radius: 0px;
 }
 
 .mdl-card__supporting-text { 
@@ -225,11 +226,20 @@ p {
 	text-decoration: blink;
 }
 
-.BLLabelNiveauValeur {
+.NIVEAU_VALEUR {
 	font-family: "Verdana";
 	font-size: 10px;
 	color: #000000;
 	font-weight: normal;
+}
+
+.TABLE_LIST {     
+	padding-left: 3px;
+   padding-right: 3px;
+   vertical-align: middle;
+   color: black;
+   font-family: "Verdana";
+   font-size: 10px;
 }
 
 .MANDATORTY_CHARACTER {
