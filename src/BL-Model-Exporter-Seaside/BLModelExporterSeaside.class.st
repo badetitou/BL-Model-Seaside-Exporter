@@ -264,14 +264,14 @@ BLModelExporterSeaside >> visitBLUIGrid: aBLUIGrid [
 					ifFalse: [ subset floor ] ].
 		text := text
 			,
-				((aBLUIGrid atLevel: number)
-					associationsFlatCollect: [ :associationWidgetPosition | 
+				((aBLUIGrid atLevelSorted: number)
+					flatCollect: [ :widget | 
 						'html mdlCell
 				class: ''grid'';
 				size: ' , subset asString
 							,
 								';
-				with: [ ' , (self visit: associationWidgetPosition key) , ' ].' , String crlf ]) ].
+				with: [ ' , (self visit: widget) , ' ].' , String crlf ]) ].
 	^ 'html
 		mdlGrid
 		with: [ ' , text , ' ].'
