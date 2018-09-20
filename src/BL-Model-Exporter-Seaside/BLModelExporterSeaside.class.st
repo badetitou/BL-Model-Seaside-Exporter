@@ -533,6 +533,17 @@ BLModelExporterSeaside >> visitBLUIPlaceholder: aBLUIPlaceholder [
 ]
 
 { #category : #visiting }
+BLModelExporterSeaside >> visitBLUITextarea: aBLUITextarea [
+	^ 'html
+		mdlTextFieldContainer: [ html mdlTextFieldLabel
+				for: html nextId;
+				with: ''Text lines...''.
+			html mdlTextArea
+				id: html lastId;
+				rows: 3 ].'
+]
+
+{ #category : #visiting }
 BLModelExporterSeaside >> visitBLUITitle: aBLUITitle [
 	^ aBLUITitle
 		text
