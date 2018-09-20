@@ -103,7 +103,7 @@ body {
 
 p { 
     margin: 0;
-	line-height: inherit;
+	line-height: normal;
 	
 }
 
