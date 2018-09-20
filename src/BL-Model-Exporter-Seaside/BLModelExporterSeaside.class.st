@@ -540,6 +540,19 @@ BLModelExporterSeaside >> visitBLUITitle: aBLUITitle [
 ]
 
 { #category : #visiting }
+BLModelExporterSeaside >> visitBLUITree: aBLUITree [
+	^ 'html div
+		', self styleForWidget: aBLUITree ,' 
+		shadow: 2;
+		with:
+			((MDLNestedList
+				elements: #(1. 2. 3.)
+				children: [ :classOrMethod | #()] )
+				format: #asString;
+				yourself).'
+]
+
+{ #category : #visiting }
 BLModelExporterSeaside >> visitBLUIValue: aBLUIValue [
 	^ aBLUIValue text protectPharoQuote 
 ]
