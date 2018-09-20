@@ -512,9 +512,9 @@ BLModelExporterSeaside >> visitBLUIName: aBLUIName [
 
 { #category : #visiting }
 BLModelExporterSeaside >> visitBLUIPanel: aBLUIPanel [
-	^ aBLUIPanel widgets
-		flatCollect: [ :widget | 'html mdlDiv ', (self styleForWidget: aBLUIPanel), '
-			 with: [ ' , (self visit: widget) , ' ].' ]
+	^ 'html mdlDiv ', (self styleForWidget: aBLUIPanel), '
+			with: [ ', (aBLUIPanel widgets
+		flatCollect: [ :widget | (self visit: widget) ]), ' ].'
 ]
 
 { #category : #visiting }
