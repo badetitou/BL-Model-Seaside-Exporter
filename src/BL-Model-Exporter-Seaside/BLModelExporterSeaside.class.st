@@ -471,7 +471,7 @@ BLModelExporterSeaside >> visitBLUIInputWeek: aBLUIInputWeek [
 
 { #category : #visiting }
 BLModelExporterSeaside >> visitBLUILabel: aBLUILabel [
-	^ aBLUILabel text protectPharoQuote 
+	^ ((aBLUILabel text  withoutPrefix: '''') withoutSuffix: '''') protectPharoQuote
 ]
 
 { #category : #visiting }
@@ -529,7 +529,7 @@ BLModelExporterSeaside >> visitBLUIParagraph: aBLUIParagraph [
 
 { #category : #visiting }
 BLModelExporterSeaside >> visitBLUIPlaceholder: aBLUIPlaceholder [
-	^ aBLUIPlaceholder text protectPharoQuote 
+	^ ((aBLUIPlaceholder text  withoutPrefix: '''') withoutSuffix: '''') protectPharoQuote
 ]
 
 { #category : #visiting }
@@ -553,11 +553,11 @@ BLModelExporterSeaside >> visitBLUITitle: aBLUITitle [
 { #category : #visiting }
 BLModelExporterSeaside >> visitBLUITree: aBLUITree [
 	^ 'html div
-		', self styleForWidget: aBLUITree ,' 
+		', (self styleForWidget: aBLUITree) ,' 
 		shadow: 2;
 		with:
 			((MDLNestedList
-				elements: #(1. 2. 3.)
+				elements: #(1 2 3)
 				children: [ :classOrMethod | #()] )
 				format: #asString;
 				yourself).'
