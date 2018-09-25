@@ -32,30 +32,43 @@ BLModelExporterSeaside >> createSubPageMetierOf: aBLPhase. [
 { #category : #visiting }
 BLModelExporterSeaside >> exportCodeOfMultiplePageMetier: aBLPhase [
 	self createSubPageMetierOf: aBLPhase.
-	^  '
+	^ '
 		| metiers |
-		metiers := OrderedDictionary new.',
-		(aBLPhase pageMetiers flatCollect: [ :metier | String crlf, 'metiers add: ''', (metier title),''' -> ', (self acceptedNameForPageMetier: metier), ' new.'   ]),' 
+		metiers := OrderedDictionary new.'
+		,
+			(aBLPhase pageMetiers
+				flatCollect: [ :metier | 
+					String crlf , 'metiers add: ''' , metier title , ''' -> '
+						, (self acceptedNameForPageMetier: metier) , ' new.' ])
+		,
+			' 
 		html mdlLayout
 		fixedHeader;
 		with: [ html
 				mdlLayoutHeader: [ html
-						mdlLayoutHeaderRow: [ html mdlLayoutTitle: ''' , aBLPhase title protectPharoQuote ,	 ''' ].
+						mdlLayoutHeaderRow: [ html mdlLayoutTitle: '''
+		, aBLPhase title protectPharoQuote
+		,
+			''' ].
 					html mdlLayoutTabBar
 						rippleEffect;
 						with: [ metiers
 								keysDo: [ :metier | 
 									html mdlLayoutTab
-										isActiveIf: metier = ''', (aBLPhase pageMetiers at: 1) title,''';
+										isActiveIf: metier = ''' , aBLPhase pageMetiers first title
+		,
+			''';
 										url: ''#tab-'' , (metier replaceAllRegex: '' '' with: '''');
 										with: metier ] ] ].
 			html
 				mdlLayoutContent: [ metiers
 						keysAndValuesDo: [ :metier :content | 
 							html mdlLayoutTabPanel
-								isActiveIf: metier = ''', (aBLPhase pageMetiers at: 1) title,''';
+								isActiveIf: metier = ''' , (aBLPhase pageMetiers first) title
+		,
+			''';
 								id: ''tab-'' , (metier replaceAllRegex: '' '' with: '''');
-								with: [ content renderContentOn: html ] ] ] ].'.
+								with: [ content renderContentOn: html ] ] ] ].'
 ]
 
 { #category : #visiting }
@@ -538,6 +551,11 @@ BLModelExporterSeaside >> visitBLUIParagraph: aBLUIParagraph [
 { #category : #visiting }
 BLModelExporterSeaside >> visitBLUIPlaceholder: aBLUIPlaceholder [
 	^ ((aBLUIPlaceholder text  withoutPrefix: '''') withoutSuffix: '''') protectPharoQuote
+]
+
+{ #category : #visiting }
+BLModelExporterSeaside >> visitBLUITabManager: aBLUITabManager [
+	^ ''
 ]
 
 { #category : #visiting }
