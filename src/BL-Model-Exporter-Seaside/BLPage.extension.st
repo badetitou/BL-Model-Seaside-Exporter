@@ -1,8 +1,8 @@
-Extension { #name : #BLPageMetier }
+Extension { #name : #BLPage }
 
 { #category : #'*BL-Model-Exporter-Seaside' }
-BLPageMetier >> writeCodeWith: anExporter [
-	^ (self container isKindOf: BLPhase)
+BLPage >> writeCodeWith: anExporter [
+	^ (self container isKindOf: BLPage)
 		ifFalse: [ ^ '' ]
 		ifTrue: [ | class |
 			class := SmalltalkImage current classNamed: self container name.
