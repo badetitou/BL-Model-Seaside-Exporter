@@ -9,8 +9,6 @@ BLPage >> writeCodeWith: anExporter [
 			class
 				compile:
 					'renderContentOn: html
-	'
-						,
-							(self widgets
-								flatCollect: [ :widget | (anExporter visit: widget) , String crlf , String tab ]) ]
+	' ,
+						(self widgets flatCollect: [ :widget | (anExporter visit: widget) , String crlf , String tab ]) ]
 ]
