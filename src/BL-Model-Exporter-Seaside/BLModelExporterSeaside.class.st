@@ -11,7 +11,7 @@ BLModelExporterSeaside >> acceptedNameForPageMetier: aPageMetier [
 
 { #category : #visiting }
 BLModelExporterSeaside >> createSubPageMetierOf: aBLPhase. [
-	aBLPhase pageMetiers do: [ :metier |
+	aBLPhase businessPage do: [ :metier |
 		| class | 
 		class := MDLApplication
 		subclass: (self acceptedNameForPageMetier: metier)
@@ -36,7 +36,7 @@ BLModelExporterSeaside >> exportCodeOfMultiplePageMetier: aBLPhase [
 		| metiers |
 		metiers := OrderedDictionary new.'
 		,
-			(aBLPhase pageMetiers
+			(aBLPhase businessPage
 				flatCollect: [ :metier | 
 					String crlf , 'metiers add: ''' , metier title , ''' -> '
 						, (self acceptedNameForPageMetier: metier) , ' new.' ])
@@ -55,7 +55,7 @@ BLModelExporterSeaside >> exportCodeOfMultiplePageMetier: aBLPhase [
 						with: [ metiers
 								keysDo: [ :metier | 
 									html mdlLayoutTab
-										isActiveIf: metier = ''' , aBLPhase pageMetiers first title
+										isActiveIf: metier = ''' , aBLPhase businessPage first title
 		,
 			''';
 										url: ''#tab-'' , (metier replaceAllRegex: '' '' with: '''');
@@ -64,7 +64,7 @@ BLModelExporterSeaside >> exportCodeOfMultiplePageMetier: aBLPhase [
 				mdlLayoutContent: [ metiers
 						keysAndValuesDo: [ :metier :content | 
 							html mdlLayoutTabPanel
-								isActiveIf: metier = ''' , (aBLPhase pageMetiers first) title
+								isActiveIf: metier = ''' , (aBLPhase businessPage first) title
 		,
 			''';
 								id: ''tab-'' , (metier replaceAllRegex: '' '' with: '''');
@@ -82,7 +82,7 @@ BLModelExporterSeaside >> exportCodeOfOnePageMetier: aBLPhase [
 		,
 			''' ] ]. 
 		html mdlLayoutContent: [
-			' , (self visit: (aBLPhase pageMetiers at: 1)) , '
+			' , (self visit: aBLPhase businessPage first) , '
 			] ].'
 ]
 
@@ -493,7 +493,7 @@ BLModelExporterSeaside >> visitBLUILabel: aBLUILabel [
 
 { #category : #visiting }
 BLModelExporterSeaside >> visitBLUILeaf: aBLUILeaf [
-	^ 'html text: ''', aBLUILeaf text protectPharoQuote, '''.'
+	^ ''"'html text: ''', aBLUILeaf text protectPharoQuote, '''.'"
 ]
 
 { #category : #visiting }
