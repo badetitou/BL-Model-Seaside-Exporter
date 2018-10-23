@@ -348,11 +348,11 @@ BLModelExporterSeaside >> visitBLUIHeight: aBLUIHeight [
 ]
 
 { #category : #visiting }
-BLModelExporterSeaside >> visitBLUIHorizontalPanel: aBLUIHorizontalPanel [
+BLModelExporterSeaside >> visitBLUIHorizontalLayout: aBLUIHorizontalLayout [
 	| subset |
-	aBLUIHorizontalPanel widgets
+	aBLUIHorizontalLayout cell
 		ifEmpty: [ subset := 12 ]
-		ifNotEmpty: [ subset := 12 / aBLUIHorizontalPanel widgets size.
+		ifNotEmpty: [ subset := 12 / aBLUIHorizontalLayout cell size.
 			subset := subset < 1
 				ifTrue: [ 1 ]
 				ifFalse: [ subset floor ] ].
@@ -360,12 +360,12 @@ BLModelExporterSeaside >> visitBLUIHorizontalPanel: aBLUIHorizontalPanel [
 		mdlGrid noSpacing;
 		with: ['
 		,
-			(aBLUIHorizontalPanel widgets
-				flatCollect: [ :widget | 
+			(aBLUIHorizontalLayout cell
+				flatCollect: [ :cell | 
 					'html mdlCell size: ''' , subset asString
 						,
 							''';
-			with: [ ' , (self visit: widget) , ' ].' ])
+			with: [ ' , (self visit: cell widget) , ' ].' ])
 		,
 			' ].'
 ]
