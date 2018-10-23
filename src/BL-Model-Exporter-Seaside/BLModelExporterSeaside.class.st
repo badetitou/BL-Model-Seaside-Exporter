@@ -154,6 +154,41 @@ BLModelExporterSeaside >> styleForWidget: aWidget [
 ]
 
 { #category : #visiting }
+BLModelExporterSeaside >> visitBLPage: aBLPhase [
+	| class |
+	class := MDLApplication
+		subclass: self prefix , aBLPhase name
+		instanceVariableNames: ''
+		classVariableNames: ''
+		package: self model name.
+	class
+		compile:
+			'initialize
+    super initialize.'.
+	class
+		compile:
+			'updateRoot: anHtmlRoot
+		super updateRoot: anHtmlRoot.
+		anHtmlRoot stylesheet url: WAFileLibrary' , self model name , ' / #mainCss'.
+	class class
+		compile:
+			'initialize
+	(self registerToDeployment: ''' , aBLPhase name , ''') addLibrary: WAFileLibrary' , self model name.
+	class
+		compile:
+			'renderContentOn: html  
+	' , (self exportCodeOfPageMetierOf: aBLPhase)
+				,
+					'
+	html
+		mdlMiniFooter: [ html
+				mdlMiniFooterLeftSection: [ html mdlLogo: ''Berger-Levrault''.
+					html
+						mdlMiniFooterLinkList: [ html listItem: [ html anchor url: ''https://badetitou.github.io''; 
+								with: ''By Benoît "Badetitou" Verhaeghe'' ] ] ] ]'
+]
+
+{ #category : #visiting }
 BLModelExporterSeaside >> visitBLPageMetier: aPageMetier [
 	aPageMetier metiers
 		ifNotEmpty: [ :metiers | 
