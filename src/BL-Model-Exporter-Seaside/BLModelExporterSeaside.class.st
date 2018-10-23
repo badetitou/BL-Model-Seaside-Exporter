@@ -154,6 +154,16 @@ BLModelExporterSeaside >> styleForWidget: aWidget [
 ]
 
 { #category : #visiting }
+BLModelExporterSeaside >> visitBLCell: aBLCell [
+	^ self visit: aBLCell widget
+]
+
+{ #category : #visiting }
+BLModelExporterSeaside >> visitBLLayout: aBLLayout [
+	^ aBLLayout cell flatCollect: [ :cell | self visit: cell ]
+]
+
+{ #category : #visiting }
 BLModelExporterSeaside >> visitBLPage: aBLPhase [
 	| class |
 	class := MDLApplication
@@ -259,20 +269,25 @@ BLModelExporterSeaside >> visitBLUIFieldset: aBLUIFieldset [
 	^ 'html mdlCard
 		shadow: 2;
 		mdlTypographyTextLeft;
-		', (self styleForWidget: aBLUIFieldset),'
+		' , (self styleForWidget: aBLUIFieldset)
+		,
+			'
 		with: [ 
 			html mdlCardTitle
 				style: ''background: #d2e9fb'';
 				with: [ html mdlCardTitleText: '''
-		, ((aBLUIFieldset attributes select: [ :attribute | attribute isKindOf: BLUITitle  ])
-				ifNotEmpty: [ :col | (self visit: (col at: 1)) ])
+		,
+			((aBLUIFieldset attributes select: [ :attribute | attribute isKindOf: BLUITitle ])
+				ifNotEmpty: [ :col | self visit: (col at: 1) ])
 		,
 			'''].
 				
 			html mdlCardTextContainer: [ 
-				' , (aBLUIFieldset widgets flatCollect: [ :widget | self visit: widget ])
-		,
-			' 
+				' , (self
+		visitBLUIPanel:
+			aBLUIFieldset)
+				,
+					' 
 				] ].'
 ]
 
@@ -280,39 +295,41 @@ BLModelExporterSeaside >> visitBLUIFieldset: aBLUIFieldset [
 BLModelExporterSeaside >> visitBLUIFieldsetDynamic: aBLUIFieldsetDynamic [
 	^ 'html mdlCard
 		shadow: 2;
-		mdlTypographyTextLeft;'
-		, (self styleForWidget: aBLUIFieldsetDynamic),'
+		mdlTypographyTextLeft;' , (self styleForWidget: aBLUIFieldsetDynamic)
+		,
+			'
 		with: [ 
 			html mdlCardTitle
 				style: ''background: #d2e9fb'';
 				with: [ html mdlCardTitleText: '''
-		, ((aBLUIFieldsetDynamic attributes select: [ :attribute | attribute isKindOf: BLUITitle  ])
-				ifNotEmpty: [ :col | (self visit: (col at: 1)) ])
+		,
+			((aBLUIFieldsetDynamic attributes select: [ :attribute | attribute isKindOf: BLUITitle ])
+				ifNotEmpty: [ :col | self visit: (col at: 1) ])
 		,
 			''' ].
 				
 			html mdlCardTextContainer: [ 
-				' , (aBLUIFieldsetDynamic widgets flatCollect: [ :widget | self visit: widget ])
+				' , (self visitBLUIPanel: aBLUIFieldsetDynamic)
 		,
 			' 
 				] ].'
 ]
 
 { #category : #visiting }
-BLModelExporterSeaside >> visitBLUIGrid: aBLUIGrid [
+BLModelExporterSeaside >> visitBLUIGridLayout: aBLUIGridLayout [
 	| text |
 	text := ''.
-	0 to: aBLUIGrid widgets size do: [ :number | 
+	0 to: aBLUIGridLayout cell size do: [ :number | 
 		| subset |
-		(aBLUIGrid atLevel: number)
+		(aBLUIGridLayout atLevel: number)
 			ifEmpty: [ subset := 12 ]
-			ifNotEmpty: [ subset := 12 / (aBLUIGrid atLevel: number) size.
+			ifNotEmpty: [ subset := 12 / (aBLUIGridLayout atLevel: number) size.
 				subset := subset < 1
 					ifTrue: [ 1 ]
 					ifFalse: [ subset floor ] ].
 		text := text
 			,
-				((aBLUIGrid atLevelSorted: number)
+				((aBLUIGridLayout atLevelSorted: number)
 					flatCollect: [ :widget | 
 						'html mdlCell
 				class: ''grid'';
@@ -564,13 +581,7 @@ BLModelExporterSeaside >> visitBLUIName: aBLUIName [
 
 { #category : #visiting }
 BLModelExporterSeaside >> visitBLUIPanel: aBLUIPanel [
-	^ 'html mdlDiv ' , (self styleForWidget: aBLUIPanel)
-		,
-			'
-			with: [ '
-		,
-			(aBLUIPanel widgets
-				flatCollect: [ :widget | 'html mdlDiv with: [' , (self visit: widget) , '].' , String crlf ]) , ' ].'
+	^ aBLUIPanel layout ifNotNil: [ self visit: aBLUIPanel layout ] ifNil: [ '' ]
 ]
 
 { #category : #visiting }
