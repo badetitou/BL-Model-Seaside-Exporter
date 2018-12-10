@@ -1,6 +1,6 @@
 Extension { #name : #BLPage }
 
-{ #category : #'*BL-Model-Exporter-Seaside' }
+{ #category : #'*Casino-Seaside-Exporter' }
 BLPage >> writeCodeWith: anExporter [
 	^ (self container isKindOf: BLPage)
 		ifFalse: [ ^ '' ]

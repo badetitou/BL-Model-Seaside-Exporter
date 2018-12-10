@@ -7,5 +7,5 @@ ZnZincServerAdaptor stop.
 Class {
 	#name : #ManifestOfBLModelExporterSeaside,
 	#superclass : #PackageManifest,
-	#category : #'BL-Model-Exporter-Seaside'
+	#category : #'Casino-Seaside-Exporter'
 }

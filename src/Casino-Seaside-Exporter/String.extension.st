@@ -1,6 +1,6 @@
 Extension { #name : #String }
 
-{ #category : #'*BL-Model-Exporter-Seaside' }
+{ #category : #'*Casino-Seaside-Exporter' }
 String >> protectPharoQuote [
 	^ self copyReplaceAll: '''' with: ''''''
 ]

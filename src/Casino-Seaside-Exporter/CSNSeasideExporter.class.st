@@ -1,16 +1,16 @@
 Class {
-	#name : #BLModelExporterSeaside,
+	#name : #CSNSeasideExporter,
 	#superclass : #BLModelExporter,
-	#category : 'BL-Model-Exporter-Seaside'
+	#category : #'Casino-Seaside-Exporter'
 }
 
 { #category : #visiting }
-BLModelExporterSeaside >> acceptedNameForPageMetier: aPageMetier [
+CSNSeasideExporter >> acceptedNameForPageMetier: aPageMetier [
 	^ self prefix , ((aPageMetier name splitOn: ':') last)
 ]
 
 { #category : #visiting }
-BLModelExporterSeaside >> createSubPageMetierOf: aBLPhase. [
+CSNSeasideExporter >> createSubPageMetierOf: aBLPhase. [
 	aBLPhase businessPage do: [ :metier |
 		| class | 
 		class := MDLApplication
@@ -30,7 +30,7 @@ BLModelExporterSeaside >> createSubPageMetierOf: aBLPhase. [
 ]
 
 { #category : #visiting }
-BLModelExporterSeaside >> exportCodeOfMultiplePageMetier: aBLPhase [
+CSNSeasideExporter >> exportCodeOfMultiplePageMetier: aBLPhase [
 	self createSubPageMetierOf: aBLPhase.
 	^ '
 		| metiers |
@@ -72,7 +72,7 @@ BLModelExporterSeaside >> exportCodeOfMultiplePageMetier: aBLPhase [
 ]
 
 { #category : #visiting }
-BLModelExporterSeaside >> exportCodeOfOnePageMetier: aBLPhase [
+CSNSeasideExporter >> exportCodeOfOnePageMetier: aBLPhase [
 	^ '
 		html mdlLayout
 		fixedHeader;
@@ -87,7 +87,7 @@ BLModelExporterSeaside >> exportCodeOfOnePageMetier: aBLPhase [
 ]
 
 { #category : #visiting }
-BLModelExporterSeaside >> exportCodeOfPageMetierOf: aBLPhase [
+CSNSeasideExporter >> exportCodeOfPageMetierOf: aBLPhase [
 	aBLPhase hasMultiplePageMetier
 		ifTrue: [ ^ self exportCodeOfMultiplePageMetier: aBLPhase ].
 	aBLPhase hasNoPageMetier
@@ -96,7 +96,7 @@ BLModelExporterSeaside >> exportCodeOfPageMetierOf: aBLPhase [
 ]
 
 { #category : #visiting }
-BLModelExporterSeaside >> exportCodeOfWithoutPageMetier: aBLPhase [
+CSNSeasideExporter >> exportCodeOfWithoutPageMetier: aBLPhase [
 	^ '
 		html mdlLayout
 		fixedHeader;
@@ -109,7 +109,7 @@ BLModelExporterSeaside >> exportCodeOfWithoutPageMetier: aBLPhase [
 ]
 
 { #category : #visiting }
-BLModelExporterSeaside >> generateCss [
+CSNSeasideExporter >> generateCss [
 	| class |
 	class := WAFileLibrary
 		subclass: WAFileLibrary name , self model name
@@ -123,28 +123,28 @@ BLModelExporterSeaside >> generateCss [
 ]
 
 { #category : #visiting }
-BLModelExporterSeaside >> getVisitSubWidgetOf: aWidget [
+CSNSeasideExporter >> getVisitSubWidgetOf: aWidget [
 	^ (aWidget widgets flatCollect: [:widget |  (self visit: widget) , String crlf, String tab])
 ]
 
 { #category : #accessing }
-BLModelExporterSeaside >> postExport [
+CSNSeasideExporter >> postExport [
 	(RPackageOrganizer default packageNamed: model name) classes do: #initialize
 ]
 
 { #category : #accessing }
-BLModelExporterSeaside >> prefix [
+CSNSeasideExporter >> prefix [
 	^ 'Exported'
 ]
 
 { #category : #accessing }
-BLModelExporterSeaside >> prepareExport [
+CSNSeasideExporter >> prepareExport [
 	
 	RPackageOrganizer default createPackageNamed: model name
 ]
 
 { #category : #'private-accessing' }
-BLModelExporterSeaside >> styleForWidget: aWidget [
+CSNSeasideExporter >> styleForWidget: aWidget [
 	^ 'style: '''
 		,((aWidget attributes select: [ :attribute | attribute isKindOf: BLUIWidth ])
 				ifNotEmpty: [ :col | 'width: ',(self visit: (col at: 1)) , ';' ]),
@@ -154,17 +154,17 @@ BLModelExporterSeaside >> styleForWidget: aWidget [
 ]
 
 { #category : #visiting }
-BLModelExporterSeaside >> visitBLCell: aBLCell [
+CSNSeasideExporter >> visitBLCell: aBLCell [
 	^ self visit: aBLCell widget
 ]
 
 { #category : #visiting }
-BLModelExporterSeaside >> visitBLLayout: aBLLayout [
+CSNSeasideExporter >> visitBLLayout: aBLLayout [
 	^ aBLLayout cell flatCollect: [ :cell | self visit: cell ]
 ]
 
 { #category : #visiting }
-BLModelExporterSeaside >> visitBLPage: aBLPhase [
+CSNSeasideExporter >> visitBLPage: aBLPhase [
 	| class |
 	class := MDLApplication
 		subclass: self prefix , aBLPhase name
@@ -199,7 +199,7 @@ BLModelExporterSeaside >> visitBLPage: aBLPhase [
 ]
 
 { #category : #visiting }
-BLModelExporterSeaside >> visitBLPageMetier: aPageMetier [
+CSNSeasideExporter >> visitBLPageMetier: aPageMetier [
 	aPageMetier metiers
 		ifNotEmpty: [ :metiers | 
 			^ 'html render: (MDLTabWidget new '
@@ -213,7 +213,7 @@ BLModelExporterSeaside >> visitBLPageMetier: aPageMetier [
 ]
 
 { #category : #visiting }
-BLModelExporterSeaside >> visitBLPhase: aBLPhase [
+CSNSeasideExporter >> visitBLPhase: aBLPhase [
 	| class |
 	class := MDLApplication
 		subclass: self prefix , aBLPhase name
@@ -248,24 +248,24 @@ BLModelExporterSeaside >> visitBLPhase: aBLPhase [
 ]
 
 { #category : #visiting }
-BLModelExporterSeaside >> visitBLUIClass: aBLUIClass [
+CSNSeasideExporter >> visitBLUIClass: aBLUIClass [
 	^ aBLUIClass text
 ]
 
 { #category : #visiting }
-BLModelExporterSeaside >> visitBLUIContainer: aBLUIContainer [
+CSNSeasideExporter >> visitBLUIContainer: aBLUIContainer [
 	^ aBLUIContainer widgets flatCollect: [ :widget | (self visit: widget), String crlf, String tab ]
 ]
 
 { #category : #visiting }
-BLModelExporterSeaside >> visitBLUIDisabled: aBLUIDisabled [
+CSNSeasideExporter >> visitBLUIDisabled: aBLUIDisabled [
 	aBLUIDisabled disabled
 		ifTrue: [ ^ 'disabled' ]
 		ifFalse: [ ^ '' ]
 ]
 
 { #category : #visiting }
-BLModelExporterSeaside >> visitBLUIFieldset: aBLUIFieldset [
+CSNSeasideExporter >> visitBLUIFieldset: aBLUIFieldset [
 	^ 'html mdlCard
 		shadow: 2;
 		mdlTypographyTextLeft;
@@ -292,7 +292,7 @@ BLModelExporterSeaside >> visitBLUIFieldset: aBLUIFieldset [
 ]
 
 { #category : #visiting }
-BLModelExporterSeaside >> visitBLUIFieldsetDynamic: aBLUIFieldsetDynamic [
+CSNSeasideExporter >> visitBLUIFieldsetDynamic: aBLUIFieldsetDynamic [
 	^ 'html mdlCard
 		shadow: 2;
 		mdlTypographyTextLeft;' , (self styleForWidget: aBLUIFieldsetDynamic)
@@ -316,7 +316,7 @@ BLModelExporterSeaside >> visitBLUIFieldsetDynamic: aBLUIFieldsetDynamic [
 ]
 
 { #category : #visiting }
-BLModelExporterSeaside >> visitBLUIGridLayout: aBLUIGridLayout [
+CSNSeasideExporter >> visitBLUIGridLayout: aBLUIGridLayout [
 	| text |
 	text := ''.
 	0 to: aBLUIGridLayout cell size do: [ :number | 
@@ -343,12 +343,12 @@ BLModelExporterSeaside >> visitBLUIGridLayout: aBLUIGridLayout [
 ]
 
 { #category : #visiting }
-BLModelExporterSeaside >> visitBLUIHeight: aBLUIHeight [
+CSNSeasideExporter >> visitBLUIHeight: aBLUIHeight [
 	^ aBLUIHeight text
 ]
 
 { #category : #visiting }
-BLModelExporterSeaside >> visitBLUIHorizontalLayout: aBLUIHorizontalLayout [
+CSNSeasideExporter >> visitBLUIHorizontalLayout: aBLUIHorizontalLayout [
 	| subset |
 	aBLUIHorizontalLayout cell
 		ifEmpty: [ subset := 12 ]
@@ -371,7 +371,7 @@ BLModelExporterSeaside >> visitBLUIHorizontalLayout: aBLUIHorizontalLayout [
 ]
 
 { #category : #visiting }
-BLModelExporterSeaside >> visitBLUIInputButton: aBLUIInputButton [
+CSNSeasideExporter >> visitBLUIInputButton: aBLUIInputButton [
 	^ 'html mdlButton
 		rippleEffect;
 		'
@@ -390,7 +390,7 @@ BLModelExporterSeaside >> visitBLUIInputButton: aBLUIInputButton [
 ]
 
 { #category : #visiting }
-BLModelExporterSeaside >> visitBLUIInputCheckbox: aBLUICheckbox [
+CSNSeasideExporter >> visitBLUIInputCheckbox: aBLUICheckbox [
 	^ 'html mdlCheckboxContainer
 		rippleEffect;'
 		,
@@ -413,37 +413,37 @@ BLModelExporterSeaside >> visitBLUIInputCheckbox: aBLUICheckbox [
 ]
 
 { #category : #visiting }
-BLModelExporterSeaside >> visitBLUIInputColor: aBLUIInputColor [
+CSNSeasideExporter >> visitBLUIInputColor: aBLUIInputColor [
 	^ 'html colorInput.'
 ]
 
 { #category : #visiting }
-BLModelExporterSeaside >> visitBLUIInputDate: aBLUIInputDate [
+CSNSeasideExporter >> visitBLUIInputDate: aBLUIInputDate [
 	^ 'html dateInput.'
 ]
 
 { #category : #visiting }
-BLModelExporterSeaside >> visitBLUIInputDatetimeLocal: aBBLUIInputDatetimeLocal [
+CSNSeasideExporter >> visitBLUIInputDatetimeLocal: aBBLUIInputDatetimeLocal [
 	^ 'html dateTimeLocalInput.'.
 ]
 
 { #category : #visiting }
-BLModelExporterSeaside >> visitBLUIInputEmail: aBBLUIInputEmail [
+CSNSeasideExporter >> visitBLUIInputEmail: aBBLUIInputEmail [
 	^ 'html emailInput.'
 ]
 
 { #category : #visiting }
-BLModelExporterSeaside >> visitBLUIInputFile: aBLUIInputFile [
+CSNSeasideExporter >> visitBLUIInputFile: aBLUIInputFile [
 	^ 'html fileUpload.'
 ]
 
 { #category : #visiting }
-BLModelExporterSeaside >> visitBLUIInputMonth: aBLUIInputMonth [
+CSNSeasideExporter >> visitBLUIInputMonth: aBLUIInputMonth [
 	^ 'html monthInput.'
 ]
 
 { #category : #visiting }
-BLModelExporterSeaside >> visitBLUIInputNumber: aBLUIInputNumber [
+CSNSeasideExporter >> visitBLUIInputNumber: aBLUIInputNumber [
 	^  'html
 		mdlTextFieldContainer: [ html mdlTextFieldLabel
 				for: html nextId;
@@ -455,7 +455,7 @@ BLModelExporterSeaside >> visitBLUIInputNumber: aBLUIInputNumber [
 ]
 
 { #category : #visiting }
-BLModelExporterSeaside >> visitBLUIInputRadio: aBLUIInputRadio [
+CSNSeasideExporter >> visitBLUIInputRadio: aBLUIInputRadio [
 	^ 'html mdlRadioContainer
 		rippleEffect;
 		for: html nextId;
@@ -474,7 +474,7 @@ BLModelExporterSeaside >> visitBLUIInputRadio: aBLUIInputRadio [
 ]
 
 { #category : #visiting }
-BLModelExporterSeaside >> visitBLUIInputRange: aBLUIInputRange [
+CSNSeasideExporter >> visitBLUIInputRange: aBLUIInputRange [
 	^ '	html mdlSlider
 		min: 0;
 		max: 100;
@@ -482,17 +482,17 @@ BLModelExporterSeaside >> visitBLUIInputRange: aBLUIInputRange [
 ]
 
 { #category : #visiting }
-BLModelExporterSeaside >> visitBLUIInputSearch: aBLUIInputSearch [
+CSNSeasideExporter >> visitBLUIInputSearch: aBLUIInputSearch [
 	^ 'html searchInput.'
 ]
 
 { #category : #visiting }
-BLModelExporterSeaside >> visitBLUIInputTel: aBLUIInputTel [
+CSNSeasideExporter >> visitBLUIInputTel: aBLUIInputTel [
 	^ 'html telephoneInput.'
 ]
 
 { #category : #visiting }
-BLModelExporterSeaside >> visitBLUIInputText: aBLUIInputText [
+CSNSeasideExporter >> visitBLUIInputText: aBLUIInputText [
 	^ '	html
 		mdlTextFieldContainer: [ html mdlTextFieldLabel
 				for: html nextId;
@@ -513,7 +513,7 @@ BLModelExporterSeaside >> visitBLUIInputText: aBLUIInputText [
 ]
 
 { #category : #visiting }
-BLModelExporterSeaside >> visitBLUIInputTextArea: aBLUIInputTextArea [
+CSNSeasideExporter >> visitBLUIInputTextArea: aBLUIInputTextArea [
 	^ 'html
 		mdlTextFieldContainer: [ html mdlTextFieldLabel
 				for: html nextId;
@@ -524,32 +524,32 @@ BLModelExporterSeaside >> visitBLUIInputTextArea: aBLUIInputTextArea [
 ]
 
 { #category : #visiting }
-BLModelExporterSeaside >> visitBLUIInputTime: aBLUIInputTime [
+CSNSeasideExporter >> visitBLUIInputTime: aBLUIInputTime [
 	^ 'html timeInput5.'
 ]
 
 { #category : #visiting }
-BLModelExporterSeaside >> visitBLUIInputUrl: aBLUIInputUrl [
+CSNSeasideExporter >> visitBLUIInputUrl: aBLUIInputUrl [
 	^ 'html urlInput.'
 ]
 
 { #category : #visiting }
-BLModelExporterSeaside >> visitBLUIInputWeek: aBLUIInputWeek [
+CSNSeasideExporter >> visitBLUIInputWeek: aBLUIInputWeek [
 	^ 'html weekInput.'
 ]
 
 { #category : #visiting }
-BLModelExporterSeaside >> visitBLUILabel: aBLUILabel [
+CSNSeasideExporter >> visitBLUILabel: aBLUILabel [
 	^ ((aBLUILabel text  withoutPrefix: '''') withoutSuffix: '''') protectPharoQuote
 ]
 
 { #category : #visiting }
-BLModelExporterSeaside >> visitBLUILeaf: aBLUILeaf [
+CSNSeasideExporter >> visitBLUILeaf: aBLUILeaf [
 	^ ''"'html text: ''', aBLUILeaf text protectPharoQuote, '''.'"
 ]
 
 { #category : #visiting }
-BLModelExporterSeaside >> visitBLUILink: aBLUILink [
+CSNSeasideExporter >> visitBLUILink: aBLUILink [
 	^ 'html anchor'
 		,
 			(aBLUILink actions
@@ -562,7 +562,7 @@ BLModelExporterSeaside >> visitBLUILink: aBLUILink [
 ]
 
 { #category : #visiting }
-BLModelExporterSeaside >> visitBLUIList: aBLUIList [
+CSNSeasideExporter >> visitBLUIList: aBLUIList [
 	^ '
 	html mdlTable
 		shadow: 2;
@@ -575,17 +575,17 @@ BLModelExporterSeaside >> visitBLUIList: aBLUIList [
 ]
 
 { #category : #visiting }
-BLModelExporterSeaside >> visitBLUIName: aBLUIName [
+CSNSeasideExporter >> visitBLUIName: aBLUIName [
 	^ aBLUIName nameValue
 ]
 
 { #category : #visiting }
-BLModelExporterSeaside >> visitBLUIPanel: aBLUIPanel [
+CSNSeasideExporter >> visitBLUIPanel: aBLUIPanel [
 	^ aBLUIPanel layout ifNotNil: [ self visit: aBLUIPanel layout ] ifNil: [ '' ]
 ]
 
 { #category : #visiting }
-BLModelExporterSeaside >> visitBLUIParagraph: aBLUIParagraph [
+CSNSeasideExporter >> visitBLUIParagraph: aBLUIParagraph [
 	^ 'html paragraph ',
 	((aBLUIParagraph attributes select: [ :attribute | attribute isKindOf: BLUIClass ]) ifNotEmpty: [ :collectionOfClass | 'class: ''', (collectionOfClass flatCollect: [ :attribute | self visit: attribute ]) , ''';', String crlf, String tab ] )
 	,'with: [ html text: '''
@@ -595,17 +595,17 @@ BLModelExporterSeaside >> visitBLUIParagraph: aBLUIParagraph [
 ]
 
 { #category : #visiting }
-BLModelExporterSeaside >> visitBLUIPlaceholder: aBLUIPlaceholder [
+CSNSeasideExporter >> visitBLUIPlaceholder: aBLUIPlaceholder [
 	^ ((aBLUIPlaceholder text  withoutPrefix: '''') withoutSuffix: '''') protectPharoQuote
 ]
 
 { #category : #visiting }
-BLModelExporterSeaside >> visitBLUITabManager: aBLUITabManager [
+CSNSeasideExporter >> visitBLUITabManager: aBLUITabManager [
 	^ ''
 ]
 
 { #category : #visiting }
-BLModelExporterSeaside >> visitBLUITextarea: aBLUITextarea [
+CSNSeasideExporter >> visitBLUITextarea: aBLUITextarea [
 	^ 'html
 		mdlTextFieldContainer: [ html mdlTextFieldLabel
 				for: html nextId;
@@ -616,14 +616,14 @@ BLModelExporterSeaside >> visitBLUITextarea: aBLUITextarea [
 ]
 
 { #category : #visiting }
-BLModelExporterSeaside >> visitBLUITitle: aBLUITitle [
+CSNSeasideExporter >> visitBLUITitle: aBLUITitle [
 	^ aBLUITitle
 		text
 		protectPharoQuote
 ]
 
 { #category : #visiting }
-BLModelExporterSeaside >> visitBLUITree: aBLUITree [
+CSNSeasideExporter >> visitBLUITree: aBLUITree [
 	^ 'html div
 		', (self styleForWidget: aBLUITree) ,' 
 		shadow: 2;
@@ -636,22 +636,22 @@ BLModelExporterSeaside >> visitBLUITree: aBLUITree [
 ]
 
 { #category : #visiting }
-BLModelExporterSeaside >> visitBLUIValue: aBLUIValue [
+CSNSeasideExporter >> visitBLUIValue: aBLUIValue [
 	^ aBLUIValue text protectPharoQuote 
 ]
 
 { #category : #visiting }
-BLModelExporterSeaside >> visitBLUIWidth: aBLUIWidth [
+CSNSeasideExporter >> visitBLUIWidth: aBLUIWidth [
 	^ aBLUIWidth text
 ]
 
 { #category : #visiting }
-BLModelExporterSeaside >> visitBLWidget: aBLWidget [
+CSNSeasideExporter >> visitBLWidget: aBLWidget [
 	^ ''
 ]
 
 { #category : #visiting }
-BLModelExporterSeaside >> visitMooseModel: aMooseModel [
+CSNSeasideExporter >> visitMooseModel: aMooseModel [
 	self generateCss.
 	aMooseModel allBLPhase do: [ :phase | self visit: phase ]
 ]

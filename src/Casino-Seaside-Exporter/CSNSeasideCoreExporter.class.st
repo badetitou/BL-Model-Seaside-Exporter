@@ -1,11 +1,11 @@
 Class {
-	#name : #BLModelExporterSeasideCore,
-	#superclass : #BLModelExporterSeaside,
-	#category : #'BL-Model-Exporter-Seaside'
+	#name : #CSNSeasideCoreExporter,
+	#superclass : #CSNSeasideExporter,
+	#category : #'Casino-Seaside-Exporter'
 }
 
 { #category : #visiting }
-BLModelExporterSeasideCore >> generateCss [
+CSNSeasideCoreExporter >> generateCss [
 	| class |
 	class := WAFileLibrary
 		subclass: WAFileLibrary name , self model name

@@ -1,6 +1,6 @@
 Extension { #name : #Dictionary }
 
-{ #category : #'*BL-Model-Exporter-Seaside' }
+{ #category : #'*Casino-Seaside-Exporter' }
 Dictionary >> associationsFlatCollect: aBlock [
 	^ self associations flatCollect: aBlock 
 ]
