@@ -77,12 +77,18 @@ CSNSeasideExporter >> exportCodeOfOnePageMetier: aBLPhase [
 		html mdlLayout
 		fixedHeader;
 		with: [ html
-				mdlLayoutHeader: [ html
-						mdlLayoutHeaderRow: [ html mdlLayoutTitle: ''' , aBLPhase title protectPharoQuote
+				mdlLayoutHeader: ['
 		,
-			''' ] ]. 
+			(aBLPhase title
+				ifNil: [ '' ]
+				ifNotNil: [ ' html
+						mdlLayoutHeaderRow: [ html mdlLayoutTitle: ''' , aBLPhase title protectPharoQuote , ''' ] ' ])
+		,
+			']. 
 		html mdlLayoutContent: [
-			' , (self visit: aBLPhase businessPage first) , '
+			' , (self visit: aBLPhase businessPage first)
+		,
+			'
 			] ].'
 ]
 
@@ -331,7 +337,7 @@ CSNSeasideExporter >> visitBLUIHorizontalLayout: aBLUIHorizontalLayout [
 					'html mdlCell size: ''' , subset asString
 						,
 							''';
-			with: [ ' , (self visit: cell widget) , ' ].' ])
+			with: [ ' , (self visit: cell) , ' ].' ])
 		,
 			' ].'
 ]
