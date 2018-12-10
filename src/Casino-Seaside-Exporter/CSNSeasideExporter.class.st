@@ -164,10 +164,10 @@ CSNSeasideExporter >> visitBLLayout: aBLLayout [
 ]
 
 { #category : #visiting }
-CSNSeasideExporter >> visitBLPage: aBLPhase [
+CSNSeasideExporter >> visitBLPage: aBLPage [
 	| class |
 	class := MDLApplication
-		subclass: self prefix , aBLPhase name
+		subclass: self prefix , aBLPage name
 		instanceVariableNames: ''
 		classVariableNames: ''
 		package: self model name.
@@ -183,11 +183,12 @@ CSNSeasideExporter >> visitBLPage: aBLPhase [
 	class class
 		compile:
 			'initialize
-	(self registerToDeployment: ''' , aBLPhase name , ''') addLibrary: WAFileLibrary' , self model name.
+	(self registerToDeployment: ''' , aBLPage name , ''') addLibrary: WAFileLibrary'
+				, self model name.
 	class
 		compile:
 			'renderContentOn: html  
-	' , (self exportCodeOfPageMetierOf: aBLPhase)
+	' , (self exportCodeOfPageMetierOf: aBLPage)
 				,
 					'
 	html
@@ -213,43 +214,8 @@ CSNSeasideExporter >> visitBLPageMetier: aPageMetier [
 ]
 
 { #category : #visiting }
-CSNSeasideExporter >> visitBLPhase: aBLPhase [
-	| class |
-	class := MDLApplication
-		subclass: self prefix , aBLPhase name
-		instanceVariableNames: ''
-		classVariableNames: ''
-		package: self model name.
-	class
-		compile:
-			'initialize
-    super initialize.'.
-	class
-		compile:
-			'updateRoot: anHtmlRoot
-		super updateRoot: anHtmlRoot.
-		anHtmlRoot stylesheet url: WAFileLibrary' , self model name , ' / #mainCss'.
-	class class
-		compile:
-			'initialize
-	(self registerToDeployment: ''' , aBLPhase name , ''') addLibrary: WAFileLibrary' , self model name.
-	class
-		compile:
-			'renderContentOn: html  
-	' , (self exportCodeOfPageMetierOf: aBLPhase)
-				,
-					'
-	html
-		mdlMiniFooter: [ html
-				mdlMiniFooterLeftSection: [ html mdlLogo: ''Berger-Levrault''.
-					html
-						mdlMiniFooterLinkList: [ html listItem: [ html anchor url: ''https://badetitou.github.io''; 
-								with: ''By Benoît "Badetitou" Verhaeghe'' ] ] ] ]'
-]
-
-{ #category : #visiting }
 CSNSeasideExporter >> visitBLUIClass: aBLUIClass [
-	^ aBLUIClass text
+	^ aBLUIClass attributeValue
 ]
 
 { #category : #visiting }
@@ -344,7 +310,7 @@ CSNSeasideExporter >> visitBLUIGridLayout: aBLUIGridLayout [
 
 { #category : #visiting }
 CSNSeasideExporter >> visitBLUIHeight: aBLUIHeight [
-	^ aBLUIHeight text
+	^ aBLUIHeight attributeValue
 ]
 
 { #category : #visiting }
@@ -540,7 +506,7 @@ CSNSeasideExporter >> visitBLUIInputWeek: aBLUIInputWeek [
 
 { #category : #visiting }
 CSNSeasideExporter >> visitBLUILabel: aBLUILabel [
-	^ ((aBLUILabel text  withoutPrefix: '''') withoutSuffix: '''') protectPharoQuote
+	^ ((aBLUILabel attributeValue withoutPrefix: '''') withoutSuffix: '''') protectPharoQuote
 ]
 
 { #category : #visiting }
@@ -596,7 +562,7 @@ CSNSeasideExporter >> visitBLUIParagraph: aBLUIParagraph [
 
 { #category : #visiting }
 CSNSeasideExporter >> visitBLUIPlaceholder: aBLUIPlaceholder [
-	^ ((aBLUIPlaceholder text  withoutPrefix: '''') withoutSuffix: '''') protectPharoQuote
+	^ ((aBLUIPlaceholder attributeValue withoutPrefix: '''') withoutSuffix: '''') protectPharoQuote
 ]
 
 { #category : #visiting }
@@ -617,9 +583,7 @@ CSNSeasideExporter >> visitBLUITextarea: aBLUITextarea [
 
 { #category : #visiting }
 CSNSeasideExporter >> visitBLUITitle: aBLUITitle [
-	^ aBLUITitle
-		text
-		protectPharoQuote
+	^ aBLUITitle attributeValue protectPharoQuote
 ]
 
 { #category : #visiting }
@@ -637,12 +601,12 @@ CSNSeasideExporter >> visitBLUITree: aBLUITree [
 
 { #category : #visiting }
 CSNSeasideExporter >> visitBLUIValue: aBLUIValue [
-	^ aBLUIValue text protectPharoQuote 
+	^ aBLUIValue attributeValue protectPharoQuote
 ]
 
 { #category : #visiting }
 CSNSeasideExporter >> visitBLUIWidth: aBLUIWidth [
-	^ aBLUIWidth text
+	^ aBLUIWidth attributeValue
 ]
 
 { #category : #visiting }
@@ -653,5 +617,5 @@ CSNSeasideExporter >> visitBLWidget: aBLWidget [
 { #category : #visiting }
 CSNSeasideExporter >> visitMooseModel: aMooseModel [
 	self generateCss.
-	aMooseModel allBLPhase do: [ :phase | self visit: phase ]
+	aMooseModel allBLPage do: [ :phase | self visit: phase ]
 ]
