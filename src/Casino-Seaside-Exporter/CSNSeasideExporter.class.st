@@ -155,7 +155,7 @@ CSNSeasideExporter >> styleForWidget: aWidget [
 
 { #category : #visiting }
 CSNSeasideExporter >> visitBLCell: aBLCell [
-	^ self visit: aBLCell widget
+	^ aBLCell widget ifNil: [ '' ] ifNotNil: [ self visit: aBLCell widget ]
 ]
 
 { #category : #visiting }
@@ -342,7 +342,7 @@ CSNSeasideExporter >> visitBLUIInputButton: aBLUIInputButton [
 		rippleEffect;
 		'
 		,
-			((aBLUIInputButton attributes select: [ :attribute | (attribute isKindOf: BLUIDisabled) and: [ attribute disabled ] ])
+			((aBLUIInputButton attributes select: [ :attribute | (attribute isKindOf: BLUIDisabled) and: [ attribute attributeValue = 'true' ] ])
 				ifNotEmpty: [ :col | (self visit: (col at: 1)) , ';' ])
 		,
 			((aBLUIInputButton attributes select: [ :attribute | attribute isKindOf: BLUITitle ])
@@ -367,7 +367,7 @@ CSNSeasideExporter >> visitBLUIInputCheckbox: aBLUICheckbox [
 		for: html nextId;
 		with: [ html mdlCheckbox '
 		,
-			((aBLUICheckbox attributes select: [ :attribute | (attribute isKindOf: BLUIDisabled) and: [ attribute disabled ] ])
+			((aBLUICheckbox attributes select: [ :attribute | (attribute isKindOf: BLUIDisabled) and: [ attribute attributeValue = 'true' ] ])
 				ifNotEmpty: [ :col | (self visit: (col at: 1)) , ';' ])
 		,
 			'
@@ -524,7 +524,7 @@ CSNSeasideExporter >> visitBLUILink: aBLUILink [
 			url: ''/', ((actions at: 1) call name),''';' ])
 		,
 			'
-		with: ''' , (aBLUILink parameters at: #label) protectPharoQuote , '''.'
+		with: ''' , ((aBLUILink attributes select: [ :attribute | attribute isKindOf: BLUILabel ]) first attributeValue) protectPharoQuote , '''.'
 ]
 
 { #category : #visiting }
@@ -602,6 +602,18 @@ CSNSeasideExporter >> visitBLUITree: aBLUITree [
 { #category : #visiting }
 CSNSeasideExporter >> visitBLUIValue: aBLUIValue [
 	^ aBLUIValue attributeValue protectPharoQuote
+]
+
+{ #category : #visiting }
+CSNSeasideExporter >> visitBLUIVerticalLayout: aBLUIVerticalLayout [
+	^ 'html
+		mdlGrid noSpacing;
+		with: ['
+		,
+			(aBLUIVerticalLayout cell
+				flatCollect: [ :cell | 
+					'html mdlCell size: ''12'';
+			with: [ ' , (self visit: cell widget) , ' ].' ]) , ' ].'
 ]
 
 { #category : #visiting }
