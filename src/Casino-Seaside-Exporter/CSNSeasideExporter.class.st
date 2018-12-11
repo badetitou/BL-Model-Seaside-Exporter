@@ -220,6 +220,75 @@ CSNSeasideExporter >> visitBLPageMetier: aPageMetier [
 ]
 
 { #category : #visiting }
+CSNSeasideExporter >> visitBLUIButton: aBLUIButton [
+	^ 'html mdlButton
+		rippleEffect;
+		'
+		,
+			((aBLUIButton
+				attributes
+				select:
+					[ :attribute | 
+					(attribute
+						isKindOf:
+							BLUIDisabled)
+						and:
+							[ attribute
+								attributeValue
+								=
+									'true' ] ])
+				ifNotEmpty:
+					[ :col | 
+					(self
+						visit:
+							(col
+								at: 1))
+						, ';' ])
+		,
+			((aBLUIButton
+				attributes
+				select:
+					[ :attribute | 
+					attribute
+						isKindOf:
+							BLUITitle ])
+				ifNotEmpty:
+					[ :col | 
+					'title: '''
+						,
+							(self
+								visit:
+									(col
+										at: 1))
+						,
+							''';'
+						,
+							String
+								crlf
+						,
+							String
+								tab ])
+		,
+			'
+		with: '''
+		,
+			((aBLUIButton
+				attributes
+				select:
+					[ :attribute | 
+					attribute
+						isKindOf:
+							BLUILabel ])
+				flatCollect:
+					[ :attribute | 
+					self
+						visit:
+							attribute ])
+		,
+			'''.'
+]
+
+{ #category : #visiting }
 CSNSeasideExporter >> visitBLUIClass: aBLUIClass [
 	^ aBLUIClass attributeValue
 ]
@@ -340,25 +409,6 @@ CSNSeasideExporter >> visitBLUIHorizontalLayout: aBLUIHorizontalLayout [
 			with: [ ' , (self visit: cell) , ' ].' ])
 		,
 			' ].'
-]
-
-{ #category : #visiting }
-CSNSeasideExporter >> visitBLUIInputButton: aBLUIInputButton [
-	^ 'html mdlButton
-		rippleEffect;
-		'
-		,
-			((aBLUIInputButton attributes select: [ :attribute | (attribute isKindOf: BLUIDisabled) and: [ attribute attributeValue = 'true' ] ])
-				ifNotEmpty: [ :col | (self visit: (col at: 1)) , ';' ])
-		,
-			((aBLUIInputButton attributes select: [ :attribute | attribute isKindOf: BLUITitle ])
-				ifNotEmpty: [ :col | 'title: ''' , (self visit: (col at: 1)) , ''';' , String crlf , String tab ])
-		,
-			'
-		with: '''
-		,
-			((aBLUIInputButton attributes select: [ :attribute | attribute isKindOf: BLUILabel ])
-				flatCollect: [ :attribute | self visit: attribute ]) , '''.'
 ]
 
 { #category : #visiting }
