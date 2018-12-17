@@ -598,7 +598,7 @@ CSNSeasideExporter >> visitBLUIList: aBLUIList [
 
 { #category : #visiting }
 CSNSeasideExporter >> visitBLUIName: aBLUIName [
-	^ aBLUIName nameValue
+	^ aBLUIName attributeValue
 ]
 
 { #category : #visiting }
