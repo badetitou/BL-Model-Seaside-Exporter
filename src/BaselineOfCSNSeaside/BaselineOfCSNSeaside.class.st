@@ -29,7 +29,7 @@ BaselineOfCSNSeaside >> defineDependencies: spec [
 
 { #category : #baselines }
 BaselineOfCSNSeaside >> defineGroups: spec [
-	spec group: 'default' with: #('CSN-Seaside-Exporter')
+	spec group: 'default' with: #('Casino-Seaside-Exporter')
 ]
 
 { #category : #baselines }
@@ -37,6 +37,6 @@ BaselineOfCSNSeaside >> definePackages: spec [
 	spec
 		repository: 'https://github.com/badetitou/BL-Model-Seaside-Exporter';
 		package: 'BaselineOfBLSeaside';
-		package: 'CSN-Seaside-Exporter'
+		package: 'Casino-Seaside-Exporter'
 			with: [ spec requires: #('BLToolkit' 'MaterialDesignLite') ]
 ]
