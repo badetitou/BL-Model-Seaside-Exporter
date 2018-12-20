@@ -358,29 +358,30 @@ CSNSeasideExporter >> visitBLUIFieldsetDynamic: aBLUIFieldsetDynamic [
 
 { #category : #visiting }
 CSNSeasideExporter >> visitBLUIGridLayout: aBLUIGridLayout [
-	| text |
-	text := ''.
-	0 to: aBLUIGridLayout cell size do: [ :number | 
-		| subset |
-		(aBLUIGridLayout atLevel: number)
-			ifEmpty: [ subset := 12 ]
-			ifNotEmpty: [ subset := 12 / (aBLUIGridLayout atLevel: number) size.
-				subset := subset < 1
-					ifTrue: [ 1 ]
-					ifFalse: [ subset floor ] ].
-		text := text
-			,
-				((aBLUIGridLayout atLevelSorted: number)
-					flatCollect: [ :widget | 
-						'html mdlCell
-				class: ''grid'';
-				size: ' , subset asString
-							,
-								';
-				with: [ ' , (self visit: widget) , ' ].' , String crlf ]) ].
 	^ 'html
-		mdlGrid
-		with: [ ' , text , ' ].'
+		table
+		with: [ '
+		,
+			((0 to: aBLUIGridLayout cell size)
+				flatCollect: [ :number | 
+					| subset |
+					(aBLUIGridLayout atLevel: number)
+						ifEmpty: [ subset := 12 ]
+						ifNotEmpty: [ subset := 12 / (aBLUIGridLayout atLevel: number) size.
+							subset := subset < 1
+								ifTrue: [ 1 ]
+								ifFalse: [ subset floor ] ].
+					'html tableRow
+				with: [ '
+						,
+							((aBLUIGridLayout atLevelSorted: number)
+								flatCollect: [ :widget | 
+									'html tableData' , (aBLUIGridLayout
+										seasideTdAttributeForCell:
+											widget)
+												,
+													'
+				with: [ ' , (self visit: widget) , ' ].' , String crlf ]) , ' ].' , String crlf ]) , ' ].'
 ]
 
 { #category : #visiting }
