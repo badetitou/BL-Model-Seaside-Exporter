@@ -1,6 +1,6 @@
 Class {
 	#name : #CSNSeasideExporter,
-	#superclass : #BLModelExporter,
+	#superclass : #CSNModelExporter,
 	#category : #'Casino-Seaside-Exporter'
 }
 

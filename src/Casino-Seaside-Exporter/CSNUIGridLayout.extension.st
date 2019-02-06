@@ -1,7 +1,7 @@
-Extension { #name : #BLUIGridLayout }
+Extension { #name : #CSNUIGridLayout }
 
 { #category : #'*Casino-Seaside-Exporter' }
-BLUIGridLayout >> seasideTdAttributeForCell: aCell [
+CSNUIGridLayout >> seasideTdAttributeForCell: aCell [
 	"return as String because it is super specific to Grid"
 
 	| cellPosition |

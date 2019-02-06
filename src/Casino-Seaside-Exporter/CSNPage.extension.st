@@ -1,7 +1,7 @@
-Extension { #name : #BLPage }
+Extension { #name : #CSNPage }
 
 { #category : #'*Casino-Seaside-Exporter' }
-BLPage >> writeCodeWith: anExporter [
+CSNPage >> writeCodeWith: anExporter [
 	^ (self container isKindOf: BLPage)
 		ifFalse: [ ^ '' ]
 		ifTrue: [ | class |
