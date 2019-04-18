@@ -212,7 +212,7 @@ CSNSeasideExporter >> visitLayout: aBLLayout [
 { #category : #visiting }
 CSNSeasideExporter >> visitMooseModel: aMooseModel [
 	self generateCss.
-	aMooseModel allBLPage do: [ :phase | self visit: phase ]
+	aMooseModel allCSNPage do: [ :phase | self visit: phase ]
 ]
 
 { #category : #visiting }
