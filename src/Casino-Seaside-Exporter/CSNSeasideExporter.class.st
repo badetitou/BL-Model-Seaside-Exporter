@@ -152,9 +152,9 @@ CSNSeasideExporter >> prepareExport [
 { #category : #'private-accessing' }
 CSNSeasideExporter >> styleForWidget: aWidget [
 	^ 'style: '''
-		,((aWidget attributes select: [ :attribute | attribute isKindOf: BLUIWidth ])
+		,((aWidget attributes select: [ :attribute | attribute isKindOf: CSNUIWidth ])
 				ifNotEmpty: [ :col | 'width: ',(self visit: (col at: 1)) , ';' ]),
-			((aWidget attributes select: [ :attribute | attribute isKindOf: BLUIHeight ])
+			((aWidget attributes select: [ :attribute | attribute isKindOf: CSNUIHeight ])
 				ifNotEmpty: [ :col | 'height: ',(self visit: (col at: 1)) , ';' ])
 		,''';'
 ]
@@ -171,7 +171,7 @@ CSNSeasideExporter >> visitBLUIFieldsetDynamic: aBLUIFieldsetDynamic [
 				style: ''background: #d2e9fb'';
 				with: [ html mdlCardTitleText: '''
 		,
-			((aBLUIFieldsetDynamic attributes select: [ :attribute | attribute isKindOf: BLUITitle ])
+			((aBLUIFieldsetDynamic attributes select: [ :attribute | attribute isKindOf: CSNUITitle ])
 				ifNotEmpty: [ :col | self visit: (col at: 1) ])
 		,
 			''' ].
@@ -269,69 +269,13 @@ CSNSeasideExporter >> visitPageMetier: aPageMetier [
 CSNSeasideExporter >> visitUIButton: aBLUIButton [
 	^ 'html mdlButton
 		rippleEffect;
-		'
+		' ,
+		((aBLUIButton attributes select: [ :attribute | (attribute isKindOf: CSNUIDisabled) and: [ attribute attributeValue = 'true' ] ]) ifNotEmpty: [ :col | (self visit: (col at: 1)) , ';' ])
 		,
-			((aBLUIButton
-				attributes
-				select:
-					[ :attribute | 
-					(attribute
-						isKindOf:
-							BLUIDisabled)
-						and:
-							[ attribute
-								attributeValue
-								=
-									'true' ] ])
-				ifNotEmpty:
-					[ :col | 
-					(self
-						visit:
-							(col
-								at: 1))
-						, ';' ])
-		,
-			((aBLUIButton
-				attributes
-				select:
-					[ :attribute | 
-					attribute
-						isKindOf:
-							BLUITitle ])
-				ifNotEmpty:
-					[ :col | 
-					'title: '''
-						,
-							(self
-								visit:
-									(col
-										at: 1))
-						,
-							''';'
-						,
-							String
-								crlf
-						,
-							String
-								tab ])
+			((aBLUIButton attributes select: [ :attribute | attribute isKindOf: CSNUITitle ]) ifNotEmpty: [ :col | 'title: ''' , (self visit: (col at: 1)) , ''';' , String crlf , String tab ])
 		,
 			'
-		with: '''
-		,
-			((aBLUIButton
-				attributes
-				select:
-					[ :attribute | 
-					attribute
-						isKindOf:
-							BLUILabel ])
-				flatCollect:
-					[ :attribute | 
-					self
-						visit:
-							attribute ])
-		,
-			'''.'
+		with: ''' , ((aBLUIButton attributes select: [ :attribute | attribute isKindOf: CSNUILabel ]) flatCollect: [ :attribute | self visit: attribute ]) , '''.'
 ]
 
 { #category : #visiting }
@@ -364,7 +308,7 @@ CSNSeasideExporter >> visitUIFieldset: aBLUIFieldset [
 				style: ''background: #d2e9fb'';
 				with: [ html mdlCardTitleText: '''
 		,
-			((aBLUIFieldset attributes select: [ :attribute | attribute isKindOf: BLUITitle ])
+			((aBLUIFieldset attributes select: [ :attribute | attribute isKindOf: CSNUITitle ])
 				ifNotEmpty: [ :col | self visit: (col at: 1) ])
 		,
 			'''].
@@ -439,21 +383,21 @@ CSNSeasideExporter >> visitUIInputCheckbox: aBLUICheckbox [
 	^ 'html mdlCheckboxContainer
 		rippleEffect;'
 		,
-			((aBLUICheckbox attributes select: [ :attribute | attribute isKindOf: BLUITitle ])
+			((aBLUICheckbox attributes select: [ :attribute | attribute isKindOf: CSNUITitle ])
 				ifNotEmpty: [ :col | 'title: ''' , (self visit: (col at: 1)) , ''';' , String crlf , String tab ])
 		,
 			'
 		for: html nextId;
 		with: [ html mdlCheckbox '
 		,
-			((aBLUICheckbox attributes select: [ :attribute | (attribute isKindOf: BLUIDisabled) and: [ attribute attributeValue = 'true' ] ])
+			((aBLUICheckbox attributes select: [ :attribute | (attribute isKindOf: CSNUIDisabled) and: [ attribute attributeValue = 'true' ] ])
 				ifNotEmpty: [ :col | (self visit: (col at: 1)) , ';' ])
 		,
 			'
 				id: html lastId.
 			html mdlCheckboxLabel: '''
 		,
-			((aBLUICheckbox attributes select: [ :attribute | attribute isKindOf: BLUILabel ])
+			((aBLUICheckbox attributes select: [ :attribute | attribute isKindOf: CSNUILabel ])
 				flatCollect: [ :attribute | self visit: attribute ]) , ''' ].'
 ]
 
@@ -507,14 +451,14 @@ CSNSeasideExporter >> visitUIInputRadio: aBLUIInputRadio [
 		with: [ html mdlRadioButton
 				attributeAt: ''name'' put: '''
 		,
-			((aBLUIInputRadio attributes select: [ :attribute | attribute isKindOf: BLUIName ])
+			((aBLUIInputRadio attributes select: [ :attribute | attribute isKindOf: CSNUIName ])
 				flatCollect: [ :attribute | self visit: attribute ])
 		,
 			''';
 				id: html lastId.
 			html mdlRadioLabel: '''
 		,
-			((aBLUIInputRadio attributes select: [ :attribute | attribute isKindOf: BLUILabel ])
+			((aBLUIInputRadio attributes select: [ :attribute | attribute isKindOf: CSNUILabel ])
 				flatCollect: [ :attribute | self visit: attribute ]) , ''' ].'
 ]
 
@@ -543,16 +487,16 @@ CSNSeasideExporter >> visitUIInputText: aBLUIInputText [
 				for: html nextId;
 				with: '''
 		,
-			((aBLUIInputText attributes select: [ :attribute | attribute isKindOf: BLUIPlaceholder ])
+			((aBLUIInputText attributes select: [ :attribute | attribute isKindOf: CSNUIPlaceholder ])
 				flatCollect: [ :attribute | self visit: attribute ])
 		,
 			'''.
 			html mdlTextFieldInput id: html lastId; value: '''
 		,
-			((aBLUIInputText attributes select: [ :attribute | attribute isKindOf: BLUIValue ])
+			((aBLUIInputText attributes select: [ :attribute | attribute isKindOf: CSNUIValue ])
 				flatCollect: [ :attribute | self visit: attribute ]) , '''	'
 		,
-			((aBLUIInputText attributes select: [ :attribute | (attribute isKindOf: BLUIDisabled) and: [ attribute disabled ] ])
+			((aBLUIInputText attributes select: [ :attribute | (attribute isKindOf: CSNUIDisabled) and: [ attribute disabled ] ])
 				ifNotEmpty: [ :col | ';' , String crlf , String tab , (self visit: (col at: 1)) ])
 		, ' ].'
 ]
