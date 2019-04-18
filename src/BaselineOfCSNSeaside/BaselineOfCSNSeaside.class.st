@@ -21,10 +21,10 @@ BaselineOfCSNSeaside >> defineDependencies: spec [
 		baseline: 'MaterialDesignLite'
 		with: [ spec repository: 'github://DuneSt/MaterialDesignLite:master/src' ].
 	spec
-		baseline: 'BLToolkit'
+		baseline: 'Casino'
 		with: [ spec
 				loads: 'core-extented';
-				repository: 'github://badetitou/BL-Toolkit:master/src' ]
+				repository: 'github://badetitou/Casino:master/src' ]
 ]
 
 { #category : #baselines }
@@ -38,5 +38,5 @@ BaselineOfCSNSeaside >> definePackages: spec [
 		repository: 'https://github.com/badetitou/BL-Model-Seaside-Exporter';
 		package: 'BaselineOfBLSeaside';
 		package: 'Casino-Seaside-Exporter'
-			with: [ spec requires: #('BLToolkit' 'MaterialDesignLite') ]
+			with: [ spec requires: #('Casino' 'MaterialDesignLite') ]
 ]
