@@ -146,7 +146,7 @@ CSNSeasideExporter >> prefix [
 { #category : #accessing }
 CSNSeasideExporter >> prepareExport [
 	
-	RPackageOrganizer default createPackageNamed: model name
+	"RPackageOrganizer default createPackageNamed: model name"
 ]
 
 { #category : #'private-accessing' }
@@ -192,11 +192,6 @@ CSNSeasideExporter >> visitBLUIInputTextArea: aBLUIInputTextArea [
 			html mdlTextArea
 				id: html lastId;
 				rows: 3 ].'
-]
-
-{ #category : #visiting }
-CSNSeasideExporter >> visitBLWidget: aBLWidget [
-	^ ''
 ]
 
 { #category : #visiting }
@@ -559,16 +554,16 @@ CSNSeasideExporter >> visitUIName: aBLUIName [
 
 { #category : #visiting }
 CSNSeasideExporter >> visitUIPanel: aBLUIPanel [
-	^ aBLUIPanel layout ifNotNil: [ self visit: aBLUIPanel layout ] ifNil: [ '' ]
+	^ aBLUIPanel layout ifNotNil: [ self visit: aBLUIPanel layout ] ifNil: [ self visitUIContainer: aBLUIPanel ]
 ]
 
 { #category : #visiting }
 CSNSeasideExporter >> visitUIParagraph: aBLUIParagraph [
 	^ 'html paragraph ',
-	((aBLUIParagraph attributes select: [ :attribute | attribute isKindOf: BLUIClass ]) ifNotEmpty: [ :collectionOfClass | 'class: ''', (collectionOfClass flatCollect: [ :attribute | self visit: attribute ]) , ''';', String crlf, String tab ] )
+	((aBLUIParagraph attributes select: [ :attribute | attribute isKindOf: CSNUIClass ]) ifNotEmpty: [ :collectionOfClass | 'class: ''', (collectionOfClass flatCollect: [ :attribute | self visit: attribute ]) , ''';', String crlf, String tab ] )
 	,'with: [ html text: '''
 		,
-			((aBLUIParagraph attributes select: [ :attribute | attribute isKindOf: BLUILabel ])
+			((aBLUIParagraph attributes select: [ :attribute | attribute isKindOf: CSNUILabel ])
 				flatCollect: [ :attribute | self visit: attribute ]) , '''].'
 ]
 
@@ -631,4 +626,9 @@ CSNSeasideExporter >> visitUIVerticalLayout: aBLUIVerticalLayout [
 { #category : #visiting }
 CSNSeasideExporter >> visitUIWidth: aBLUIWidth [
 	^ aBLUIWidth attributeValue
+]
+
+{ #category : #visiting }
+CSNSeasideExporter >> visitWidget: aWidget [
+	^ ''
 ]
