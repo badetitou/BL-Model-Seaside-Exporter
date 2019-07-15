@@ -167,7 +167,7 @@ CSNSeasideExporter >> visitBLUIFieldsetDynamic: aBLUIFieldsetDynamic [
 		,
 			'
 		with: [ 
-			html mdlCardTitle
+			html mdlCardTitleContainer
 				style: ''background: #d2e9fb'';
 				with: [ html mdlCardTitleText: '''
 		,
@@ -304,7 +304,7 @@ CSNSeasideExporter >> visitUIFieldset: aBLUIFieldset [
 		,
 			'
 		with: [ 
-			html mdlCardTitle
+			html mdlCardTitleContainer
 				style: ''background: #d2e9fb'';
 				with: [ html mdlCardTitleText: '''
 		,
@@ -530,13 +530,13 @@ CSNSeasideExporter >> visitUILeaf: aBLUILeaf [
 CSNSeasideExporter >> visitUILink: aBLUILink [
 	^ 'html anchor'
 		,
-			(aBLUILink actions
+			((aBLUILink actions select: #isActionAppel)
 				ifNotEmpty: [ :actions | 
 					'
 			url: ''/', ((actions at: 1) call name),''';' ])
 		,
 			'
-		with: ''' , ((aBLUILink attributes select: [ :attribute | attribute isKindOf: BLUILabel ]) first attributeValue) protectPharoQuote , '''.'
+		with: ''' , ((aBLUILink attributes select: [ :attribute | attribute isKindOf: CSNUILabel ]) first attributeValue) protectPharoQuote , '''.'
 ]
 
 { #category : #visiting }
