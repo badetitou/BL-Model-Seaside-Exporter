@@ -10,7 +10,7 @@ CSNSeasideExporter >> acceptedNameForPageMetier: aPageMetier [
 ]
 
 { #category : #visiting }
-CSNSeasideExporter >> createSubPageMetierOf: aBLPhase. [
+CSNSeasideExporter >> createSubPageMetierOf: aBLPhase [.
 	aBLPhase businessPage do: [ :metier |
 		| class | 
 		class := MDLApplication
@@ -160,7 +160,26 @@ CSNSeasideExporter >> styleForWidget: aWidget [
 ]
 
 { #category : #visiting }
-CSNSeasideExporter >> visitBLUIFieldsetDynamic: aBLUIFieldsetDynamic [
+CSNSeasideExporter >> visitCSNBusinessPage: aPageMetier [
+	aPageMetier metiers
+		ifNotEmpty: [ :metiers | 
+			^ 'html render: (MDLTabWidget new '
+				,
+					(metiers
+						flatCollect: [ :metier | 
+							'addTabNamed: ''' , metier title protectPharoQuote , ''' content: [' , (self visit: metier) , '];'
+								, String crlf , String tab ]) , 'yourself).' ]
+		ifEmpty: [ ^ aPageMetier widgets
+				flatCollect: [ :widget | (self visit: widget) , String crlf , String tab ] ]
+]
+
+{ #category : #visiting }
+CSNSeasideExporter >> visitCSNContainer: aBLUIContainer [
+	^ aBLUIContainer widgets flatCollect: [ :widget | (self visit: widget), String crlf, String tab ]
+]
+
+{ #category : #visiting }
+CSNSeasideExporter >> visitCSNDynamicFieldset: aBLUIFieldsetDynamic [
 	^ 'html mdlCard
 		shadow: 2;
 		mdlTypographyTextLeft;' , (self styleForWidget: aBLUIFieldsetDynamic)
@@ -177,41 +196,92 @@ CSNSeasideExporter >> visitBLUIFieldsetDynamic: aBLUIFieldsetDynamic [
 			''' ].
 				
 			html mdlCardTextContainer: [ 
-				' , (self visitUIPanel: aBLUIFieldsetDynamic)
+				' , (self visitCSNUIPanel: aBLUIFieldsetDynamic)
 		,
 			' 
 				] ].'
 ]
 
 { #category : #visiting }
-CSNSeasideExporter >> visitBLUIInputTextArea: aBLUIInputTextArea [
-	^ 'html
-		mdlTextFieldContainer: [ html mdlTextFieldLabel
-				for: html nextId;
-				with: ''Text lines...''.
-			html mdlTextArea
-				id: html lastId;
-				rows: 3 ].'
-]
-
-{ #category : #visiting }
-CSNSeasideExporter >> visitCell: aBLCell [
+CSNSeasideExporter >> visitCSNLCell: aBLCell [
 	^ aBLCell widget ifNil: [ '' ] ifNotNil: [ self visit: aBLCell widget ]
 ]
 
 { #category : #visiting }
-CSNSeasideExporter >> visitLayout: aBLLayout [
+CSNSeasideExporter >> visitCSNLGridLayout: aBLUIGridLayout [
+	^ 'html
+		table
+		with: [ '
+		,
+			((0 to: aBLUIGridLayout cell size)
+				flatCollect: [ :number | 
+					| subset |
+					(aBLUIGridLayout atLevel: number)
+						ifEmpty: [ subset := 12 ]
+						ifNotEmpty: [ subset := 12 / (aBLUIGridLayout atLevel: number) size.
+							subset := subset < 1
+								ifTrue: [ 1 ]
+								ifFalse: [ subset floor ] ].
+					'html tableRow
+				with: [ '
+						,
+							((aBLUIGridLayout atLevelSorted: number)
+								flatCollect: [ :widget | 
+									'html tableData' , (aBLUIGridLayout
+										seasideTdAttributeForCell:
+											widget)
+												,
+													'
+				with: [ ' , (self visit: widget) , ' ].' , String crlf ]) , ' ].' , String crlf ]) , ' ].'
+]
+
+{ #category : #visiting }
+CSNSeasideExporter >> visitCSNLHorizontalLayout: aBLUIHorizontalLayout [
+	| subset |
+	aBLUIHorizontalLayout cell
+		ifEmpty: [ subset := 12 ]
+		ifNotEmpty: [ subset := 12 / aBLUIHorizontalLayout cell size.
+			subset := subset < 1
+				ifTrue: [ 1 ]
+				ifFalse: [ subset floor ] ].
+	^ 'html
+		mdlGrid noSpacing;
+		with: ['
+		,
+			(aBLUIHorizontalLayout cell
+				flatCollect: [ :cell | 
+					'html mdlCell size: ''' , subset asString
+						,
+							''';
+			with: [ ' , (self visit: cell) , ' ].' ])
+		,
+			' ].'
+]
+
+{ #category : #visiting }
+CSNSeasideExporter >> visitCSNLLayout: aBLLayout [
 	^ aBLLayout cell flatCollect: [ :cell | self visit: cell ]
 ]
 
 { #category : #visiting }
-CSNSeasideExporter >> visitMooseModel: aMooseModel [
-	self generateCss.
-	aMooseModel allCSNPage do: [ :phase | self visit: phase ]
+CSNSeasideExporter >> visitCSNLVerticalLayout: aBLUIVerticalLayout [
+	^ 'html
+		mdlGrid noSpacing;
+		with: ['
+		,
+			(aBLUIVerticalLayout cell
+				flatCollect: [ :cell | 
+					'html mdlCell size: ''12'';
+			with: [ ' , (self visit: cell widget) , ' ].' ]) , ' ].'
 ]
 
 { #category : #visiting }
-CSNSeasideExporter >> visitPage: aBLPage [
+CSNSeasideExporter >> visitCSNLeaf: aBLUILeaf [
+	^ ''"'html text: ''', aBLUILeaf text protectPharoQuote, '''.'"
+]
+
+{ #category : #visiting }
+CSNSeasideExporter >> visitCSNPage: aBLPage [
 	| class |
 	class := MDLApplication
 		subclass: self prefix , aBLPage name
@@ -247,21 +317,7 @@ CSNSeasideExporter >> visitPage: aBLPage [
 ]
 
 { #category : #visiting }
-CSNSeasideExporter >> visitPageMetier: aPageMetier [
-	aPageMetier metiers
-		ifNotEmpty: [ :metiers | 
-			^ 'html render: (MDLTabWidget new '
-				,
-					(metiers
-						flatCollect: [ :metier | 
-							'addTabNamed: ''' , metier title protectPharoQuote , ''' content: [' , (self visit: metier) , '];'
-								, String crlf , String tab ]) , 'yourself).' ]
-		ifEmpty: [ ^ aPageMetier widgets
-				flatCollect: [ :widget | (self visit: widget) , String crlf , String tab ] ]
-]
-
-{ #category : #visiting }
-CSNSeasideExporter >> visitUIButton: aBLUIButton [
+CSNSeasideExporter >> visitCSNUIButton: aBLUIButton [
 	^ 'html mdlButton
 		rippleEffect;
 		' ,
@@ -274,24 +330,19 @@ CSNSeasideExporter >> visitUIButton: aBLUIButton [
 ]
 
 { #category : #visiting }
-CSNSeasideExporter >> visitUIClass: aBLUIClass [
+CSNSeasideExporter >> visitCSNUIClass: aBLUIClass [
 	^ aBLUIClass attributeValue
 ]
 
 { #category : #visiting }
-CSNSeasideExporter >> visitUIContainer: aBLUIContainer [
-	^ aBLUIContainer widgets flatCollect: [ :widget | (self visit: widget), String crlf, String tab ]
-]
-
-{ #category : #visiting }
-CSNSeasideExporter >> visitUIDisabled: aBLUIDisabled [
+CSNSeasideExporter >> visitCSNUIDisabled: aBLUIDisabled [
 	aBLUIDisabled disabled
 		ifTrue: [ ^ 'disabled' ]
 		ifFalse: [ ^ '' ]
 ]
 
 { #category : #visiting }
-CSNSeasideExporter >> visitUIFieldset: aBLUIFieldset [
+CSNSeasideExporter >> visitCSNUIFieldset: aBLUIFieldset [
 	^ 'html mdlCard
 		shadow: 2;
 		mdlTypographyTextLeft;
@@ -310,7 +361,7 @@ CSNSeasideExporter >> visitUIFieldset: aBLUIFieldset [
 				
 			html mdlCardTextContainer: [ 
 				' , (self
-		visitUIPanel:
+		visitCSNUIPanel:
 			aBLUIFieldset)
 				,
 					' 
@@ -318,63 +369,12 @@ CSNSeasideExporter >> visitUIFieldset: aBLUIFieldset [
 ]
 
 { #category : #visiting }
-CSNSeasideExporter >> visitUIGridLayout: aBLUIGridLayout [
-	^ 'html
-		table
-		with: [ '
-		,
-			((0 to: aBLUIGridLayout cell size)
-				flatCollect: [ :number | 
-					| subset |
-					(aBLUIGridLayout atLevel: number)
-						ifEmpty: [ subset := 12 ]
-						ifNotEmpty: [ subset := 12 / (aBLUIGridLayout atLevel: number) size.
-							subset := subset < 1
-								ifTrue: [ 1 ]
-								ifFalse: [ subset floor ] ].
-					'html tableRow
-				with: [ '
-						,
-							((aBLUIGridLayout atLevelSorted: number)
-								flatCollect: [ :widget | 
-									'html tableData' , (aBLUIGridLayout
-										seasideTdAttributeForCell:
-											widget)
-												,
-													'
-				with: [ ' , (self visit: widget) , ' ].' , String crlf ]) , ' ].' , String crlf ]) , ' ].'
-]
-
-{ #category : #visiting }
-CSNSeasideExporter >> visitUIHeight: aBLUIHeight [
+CSNSeasideExporter >> visitCSNUIHeight: aBLUIHeight [
 	^ aBLUIHeight attributeValue
 ]
 
 { #category : #visiting }
-CSNSeasideExporter >> visitUIHorizontalLayout: aBLUIHorizontalLayout [
-	| subset |
-	aBLUIHorizontalLayout cell
-		ifEmpty: [ subset := 12 ]
-		ifNotEmpty: [ subset := 12 / aBLUIHorizontalLayout cell size.
-			subset := subset < 1
-				ifTrue: [ 1 ]
-				ifFalse: [ subset floor ] ].
-	^ 'html
-		mdlGrid noSpacing;
-		with: ['
-		,
-			(aBLUIHorizontalLayout cell
-				flatCollect: [ :cell | 
-					'html mdlCell size: ''' , subset asString
-						,
-							''';
-			with: [ ' , (self visit: cell) , ' ].' ])
-		,
-			' ].'
-]
-
-{ #category : #visiting }
-CSNSeasideExporter >> visitUIInputCheckbox: aBLUICheckbox [
+CSNSeasideExporter >> visitCSNUIInputCheckbox: aBLUICheckbox [
 	^ 'html mdlCheckboxContainer
 		rippleEffect;'
 		,
@@ -397,37 +397,37 @@ CSNSeasideExporter >> visitUIInputCheckbox: aBLUICheckbox [
 ]
 
 { #category : #visiting }
-CSNSeasideExporter >> visitUIInputColor: aBLUIInputColor [
+CSNSeasideExporter >> visitCSNUIInputColor: aBLUIInputColor [
 	^ 'html colorInput.'
 ]
 
 { #category : #visiting }
-CSNSeasideExporter >> visitUIInputDate: aBLUIInputDate [
+CSNSeasideExporter >> visitCSNUIInputDate: aBLUIInputDate [
 	^ 'html dateInput.'
 ]
 
 { #category : #visiting }
-CSNSeasideExporter >> visitUIInputDatetimeLocal: aBBLUIInputDatetimeLocal [
+CSNSeasideExporter >> visitCSNUIInputDatetimeLocal: aBBLUIInputDatetimeLocal [
 	^ 'html dateTimeLocalInput.'.
 ]
 
 { #category : #visiting }
-CSNSeasideExporter >> visitUIInputEmail: aBBLUIInputEmail [
+CSNSeasideExporter >> visitCSNUIInputEmail: aBBLUIInputEmail [
 	^ 'html emailInput.'
 ]
 
 { #category : #visiting }
-CSNSeasideExporter >> visitUIInputFile: aBLUIInputFile [
+CSNSeasideExporter >> visitCSNUIInputFile: aBLUIInputFile [
 	^ 'html fileUpload.'
 ]
 
 { #category : #visiting }
-CSNSeasideExporter >> visitUIInputMonth: aBLUIInputMonth [
+CSNSeasideExporter >> visitCSNUIInputMonth: aBLUIInputMonth [
 	^ 'html monthInput.'
 ]
 
 { #category : #visiting }
-CSNSeasideExporter >> visitUIInputNumber: aBLUIInputNumber [
+CSNSeasideExporter >> visitCSNUIInputNumber: aBLUIInputNumber [
 	^  'html
 		mdlTextFieldContainer: [ html mdlTextFieldLabel
 				for: html nextId;
@@ -439,7 +439,7 @@ CSNSeasideExporter >> visitUIInputNumber: aBLUIInputNumber [
 ]
 
 { #category : #visiting }
-CSNSeasideExporter >> visitUIInputRadio: aBLUIInputRadio [
+CSNSeasideExporter >> visitCSNUIInputRadio: aBLUIInputRadio [
 	^ 'html mdlRadioContainer
 		rippleEffect;
 		for: html nextId;
@@ -458,7 +458,7 @@ CSNSeasideExporter >> visitUIInputRadio: aBLUIInputRadio [
 ]
 
 { #category : #visiting }
-CSNSeasideExporter >> visitUIInputRange: aBLUIInputRange [
+CSNSeasideExporter >> visitCSNUIInputRange: aBLUIInputRange [
 	^ '	html mdlSlider
 		min: 0;
 		max: 100;
@@ -466,17 +466,17 @@ CSNSeasideExporter >> visitUIInputRange: aBLUIInputRange [
 ]
 
 { #category : #visiting }
-CSNSeasideExporter >> visitUIInputSearch: aBLUIInputSearch [
+CSNSeasideExporter >> visitCSNUIInputSearch: aBLUIInputSearch [
 	^ 'html searchInput.'
 ]
 
 { #category : #visiting }
-CSNSeasideExporter >> visitUIInputTel: aBLUIInputTel [
+CSNSeasideExporter >> visitCSNUIInputTel: aBLUIInputTel [
 	^ 'html telephoneInput.'
 ]
 
 { #category : #visiting }
-CSNSeasideExporter >> visitUIInputText: aBLUIInputText [
+CSNSeasideExporter >> visitCSNUIInputText: aBLUIInputText [
 	^ '	html
 		mdlTextFieldContainer: [ html mdlTextFieldLabel
 				for: html nextId;
@@ -497,32 +497,27 @@ CSNSeasideExporter >> visitUIInputText: aBLUIInputText [
 ]
 
 { #category : #visiting }
-CSNSeasideExporter >> visitUIInputTime: aBLUIInputTime [
+CSNSeasideExporter >> visitCSNUIInputTime: aBLUIInputTime [
 	^ 'html timeInput5.'
 ]
 
 { #category : #visiting }
-CSNSeasideExporter >> visitUIInputUrl: aBLUIInputUrl [
+CSNSeasideExporter >> visitCSNUIInputUrl: aBLUIInputUrl [
 	^ 'html urlInput.'
 ]
 
 { #category : #visiting }
-CSNSeasideExporter >> visitUIInputWeek: aBLUIInputWeek [
+CSNSeasideExporter >> visitCSNUIInputWeek: aBLUIInputWeek [
 	^ 'html weekInput.'
 ]
 
 { #category : #visiting }
-CSNSeasideExporter >> visitUILabel: aBLUILabel [
+CSNSeasideExporter >> visitCSNUILabel: aBLUILabel [
 	^ ((aBLUILabel attributeValue withoutPrefix: '''') withoutSuffix: '''') protectPharoQuote
 ]
 
 { #category : #visiting }
-CSNSeasideExporter >> visitUILeaf: aBLUILeaf [
-	^ ''"'html text: ''', aBLUILeaf text protectPharoQuote, '''.'"
-]
-
-{ #category : #visiting }
-CSNSeasideExporter >> visitUILink: aBLUILink [
+CSNSeasideExporter >> visitCSNUILink: aBLUILink [
 	^ 'html anchor'
 		,
 			((aBLUILink actions select: #isActionAppel)
@@ -535,7 +530,7 @@ CSNSeasideExporter >> visitUILink: aBLUILink [
 ]
 
 { #category : #visiting }
-CSNSeasideExporter >> visitUIList: aBLUIList [
+CSNSeasideExporter >> visitCSNUIList: aBLUIList [
 	^ '
 	html mdlTable
 		shadow: 2;
@@ -548,17 +543,17 @@ CSNSeasideExporter >> visitUIList: aBLUIList [
 ]
 
 { #category : #visiting }
-CSNSeasideExporter >> visitUIName: aBLUIName [
+CSNSeasideExporter >> visitCSNUIName: aBLUIName [
 	^ aBLUIName attributeValue
 ]
 
 { #category : #visiting }
-CSNSeasideExporter >> visitUIPanel: aBLUIPanel [
-	^ aBLUIPanel layout ifNotNil: [ self visit: aBLUIPanel layout ] ifNil: [ self visitUIContainer: aBLUIPanel ]
+CSNSeasideExporter >> visitCSNUIPanel: aBLUIPanel [
+	^ aBLUIPanel layout ifNotNil: [ self visit: aBLUIPanel layout ] ifNil: [ self visitCSNContainer: aBLUIPanel ]
 ]
 
 { #category : #visiting }
-CSNSeasideExporter >> visitUIParagraph: aBLUIParagraph [
+CSNSeasideExporter >> visitCSNUIParagraph: aBLUIParagraph [
 	^ 'html paragraph ',
 	((aBLUIParagraph attributes select: [ :attribute | attribute isKindOf: CSNUIClass ]) ifNotEmpty: [ :collectionOfClass | 'class: ''', (collectionOfClass flatCollect: [ :attribute | self visit: attribute ]) , ''';', String crlf, String tab ] )
 	,'with: [ html text: '''
@@ -568,17 +563,17 @@ CSNSeasideExporter >> visitUIParagraph: aBLUIParagraph [
 ]
 
 { #category : #visiting }
-CSNSeasideExporter >> visitUIPlaceholder: aBLUIPlaceholder [
+CSNSeasideExporter >> visitCSNUIPlaceholder: aBLUIPlaceholder [
 	^ ((aBLUIPlaceholder attributeValue withoutPrefix: '''') withoutSuffix: '''') protectPharoQuote
 ]
 
 { #category : #visiting }
-CSNSeasideExporter >> visitUITabManager: aBLUITabManager [
+CSNSeasideExporter >> visitCSNUITabManager: aBLUITabManager [
 	^ ''
 ]
 
 { #category : #visiting }
-CSNSeasideExporter >> visitUITextarea: aBLUITextarea [
+CSNSeasideExporter >> visitCSNUITextarea: aBLUIInputTextArea [
 	^ 'html
 		mdlTextFieldContainer: [ html mdlTextFieldLabel
 				for: html nextId;
@@ -589,12 +584,12 @@ CSNSeasideExporter >> visitUITextarea: aBLUITextarea [
 ]
 
 { #category : #visiting }
-CSNSeasideExporter >> visitUITitle: aBLUITitle [
+CSNSeasideExporter >> visitCSNUITitle: aBLUITitle [
 	^ aBLUITitle attributeValue protectPharoQuote
 ]
 
 { #category : #visiting }
-CSNSeasideExporter >> visitUITree: aBLUITree [
+CSNSeasideExporter >> visitCSNUITree: aBLUITree [
 	^ 'html div
 		', (self styleForWidget: aBLUITree) ,' 
 		shadow: 2;
@@ -607,28 +602,22 @@ CSNSeasideExporter >> visitUITree: aBLUITree [
 ]
 
 { #category : #visiting }
-CSNSeasideExporter >> visitUIValue: aBLUIValue [
+CSNSeasideExporter >> visitCSNUIValue: aBLUIValue [
 	^ aBLUIValue attributeValue protectPharoQuote
 ]
 
 { #category : #visiting }
-CSNSeasideExporter >> visitUIVerticalLayout: aBLUIVerticalLayout [
-	^ 'html
-		mdlGrid noSpacing;
-		with: ['
-		,
-			(aBLUIVerticalLayout cell
-				flatCollect: [ :cell | 
-					'html mdlCell size: ''12'';
-			with: [ ' , (self visit: cell widget) , ' ].' ]) , ' ].'
-]
-
-{ #category : #visiting }
-CSNSeasideExporter >> visitUIWidth: aBLUIWidth [
+CSNSeasideExporter >> visitCSNUIWidth: aBLUIWidth [
 	^ aBLUIWidth attributeValue
 ]
 
 { #category : #visiting }
-CSNSeasideExporter >> visitWidget: aWidget [
+CSNSeasideExporter >> visitCSNWidget: aWidget [
 	^ ''
+]
+
+{ #category : #visiting }
+CSNSeasideExporter >> visitMooseModel: aMooseModel [
+	self generateCss.
+	aMooseModel allCSNPage do: [ :phase | self visit: phase ]
 ]
