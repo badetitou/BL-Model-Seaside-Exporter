@@ -1,3 +1,10 @@
+"
+I export a CSNUIModel in a Seaside Application.
+I define a specific CSS for the application (css inspired by one of a french company)
+
+example: 
+CSNSeasideCoreExporter export: modelToExport.
+"
 Class {
 	#name : #CSNSeasideCoreExporter,
 	#superclass : #CSNSeasideExporter,

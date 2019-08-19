@@ -1,3 +1,10 @@
+"
+I export a CSNUIModel in a Seaside Application.
+
+
+example: 
+CSNSeasideExporter export: modelToExport.
+"
 Class {
 	#name : #CSNSeasideExporter,
 	#superclass : #CSNModelExporter,
@@ -332,6 +339,41 @@ CSNSeasideExporter >> visitCSNUIButton: aBLUIButton [
 { #category : #visiting }
 CSNSeasideExporter >> visitCSNUIClass: aBLUIClass [
 	^ aBLUIClass attributeValue
+]
+
+{ #category : #visiting }
+CSNSeasideExporter >> visitCSNUICustomWidget: aCSNUICustomWidget [
+	| class |
+	class := MDLApplication
+		subclass: self prefix , aCSNUICustomWidget name
+		instanceVariableNames: ''
+		classVariableNames: ''
+		package: self model name.
+	class
+		compile:
+			'initialize
+    super initialize.'.
+	class
+		compile:
+			'updateRoot: anHtmlRoot
+		super updateRoot: anHtmlRoot.
+		anHtmlRoot stylesheet url: WAFileLibrary' , self model name , ' / #mainCss'.
+	class class
+		compile:
+			'initialize
+	(self registerToDeployment: ''' , aCSNUICustomWidget name , ''') addLibrary: WAFileLibrary' , self model name.
+	class
+		compile:
+			'renderContentOn: html  
+	' , (aCSNUICustomWidget widgets flatCollect: [ :widget | widget accept: self ])
+				,
+					'
+	html
+		mdlMiniFooter: [ html
+				mdlMiniFooterLeftSection: [ html mdlLogo: ''Berger-Levrault''.
+					html
+						mdlMiniFooterLinkList: [ html listItem: [ html anchor url: ''https://badetitou.github.io''; 
+								with: ''By Benoît "Badetitou" Verhaeghe'' ] ] ] ]'
 ]
 
 { #category : #visiting }
