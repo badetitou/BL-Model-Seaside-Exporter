@@ -122,6 +122,31 @@ CSNSeasideExporter >> exportCodeOfWithoutPageMetier: aBLPhase [
 ]
 
 { #category : #visiting }
+CSNSeasideExporter >> exportOpenOnSeasideForClass: aClass [
+	aClass class
+		compile:
+			'
+open
+	<script>
+	| port url |
+	WAServerManager default adaptors
+		ifEmpty: [ (ZnZincServerAdaptor port: (port := 8085)) start ]
+		ifNotEmpty: [ :adaptors | 
+			adaptors
+				detect: #isRunning
+				ifFound: [ :anAdaptor | port := anAdaptor server port ]
+				ifNone: [ (ZnZincServerAdaptor port: (port := 8085)) start ] ].
+	url := ''http://localhost:'' , port asString , ''/', aClass name, '''.
+	self flag: #pharo6.
+	SystemVersion current major < 7
+		ifTrue: [ self class environment
+				at: #OSProcess
+				ifPresent: [ :class | class command: ''open '' , url ]
+				ifAbsent: [ self inform: ''Open '' , url , '' or install OSProcess.'' ] ]
+		ifFalse: [ WebBrowser openOn: url ]'
+]
+
+{ #category : #visiting }
 CSNSeasideExporter >> generateCss [
 	| class |
 	class := WAFileLibrary
@@ -295,6 +320,7 @@ CSNSeasideExporter >> visitCSNPage: aBLPage [
 		instanceVariableNames: ''
 		classVariableNames: ''
 		package: self model name.
+	self exportOpenOnSeasideForClass: class.
 	class
 		compile:
 			'initialize
@@ -307,8 +333,7 @@ CSNSeasideExporter >> visitCSNPage: aBLPage [
 	class class
 		compile:
 			'initialize
-	(self registerToDeployment: ''' , aBLPage name , ''') addLibrary: WAFileLibrary'
-				, self model name.
+	(self registerToDeployment: ''' , class name , ''') addLibrary: WAFileLibrary' , self model name.
 	class
 		compile:
 			'renderContentOn: html  
@@ -349,6 +374,7 @@ CSNSeasideExporter >> visitCSNUICustomWidget: aCSNUICustomWidget [
 		instanceVariableNames: ''
 		classVariableNames: ''
 		package: self model name.
+	self exportOpenOnSeasideForClass: class.
 	class
 		compile:
 			'initialize
@@ -361,7 +387,7 @@ CSNSeasideExporter >> visitCSNUICustomWidget: aCSNUICustomWidget [
 	class class
 		compile:
 			'initialize
-	(self registerToDeployment: ''' , aCSNUICustomWidget name , ''') addLibrary: WAFileLibrary' , self model name.
+	(self registerToDeployment: ''' , class name , ''') addLibrary: WAFileLibrary' , self model name.
 	class
 		compile:
 			'renderContentOn: html  
