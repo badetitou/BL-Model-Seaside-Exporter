@@ -133,6 +133,7 @@ label {
     padding: 5px 5px 0px 0px;
     position: relative;
     z-index: 2;
+    overflow: hidden;
 }
 
 .mdl-textfield > label { 
