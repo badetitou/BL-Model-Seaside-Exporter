@@ -392,14 +392,6 @@ CSNSeasideExporter >> visitCSNUICustomWidget: aCSNUICustomWidget [
 		compile:
 			'renderContentOn: html  
 	' , (aCSNUICustomWidget widgets flatCollect: [ :widget | widget accept: self ])
-				,
-					'
-	html
-		mdlMiniFooter: [ html
-				mdlMiniFooterLeftSection: [ html mdlLogo: ''Berger-Levrault''.
-					html
-						mdlMiniFooterLinkList: [ html listItem: [ html anchor url: ''https://badetitou.github.io''; 
-								with: ''By Benoît "Badetitou" Verhaeghe'' ] ] ] ]'
 ]
 
 { #category : #visiting }
@@ -481,7 +473,13 @@ CSNSeasideExporter >> visitCSNUIInputDatetimeLocal: aBBLUIInputDatetimeLocal [
 
 { #category : #visiting }
 CSNSeasideExporter >> visitCSNUIInputEmail: aBBLUIInputEmail [
-	^ 'html emailInput.'
+	^ 'html
+		mdlTextFieldContainer: [ html mdlTextFieldLabel
+				for: html nextId;
+				with: ''Email''.
+			html mdlTextFieldInput
+				id: html lastId.
+			html mdlTextFieldError: ''Input is not an email!'' ].'
 ]
 
 { #category : #visiting }
@@ -636,6 +634,13 @@ CSNSeasideExporter >> visitCSNUIPlaceholder: aBLUIPlaceholder [
 ]
 
 { #category : #visiting }
+CSNSeasideExporter >> visitCSNUISelect: aCSNUISelect [
+	^ 'html
+    render:
+        (MDLSelectWidget new).'
+]
+
+{ #category : #visiting }
 CSNSeasideExporter >> visitCSNUITabManager: aBLUITabManager [
 	^ ''
 ]
@@ -672,6 +677,12 @@ CSNSeasideExporter >> visitCSNUITree: aBLUITree [
 { #category : #visiting }
 CSNSeasideExporter >> visitCSNUIValue: aBLUIValue [
 	^ aBLUIValue attributeValue protectPharoQuote
+]
+
+{ #category : #visiting }
+CSNSeasideExporter >> visitCSNUIWidgetLabel: aCSNUIWidgetLabel [
+	^ 'html label with: [ html text: ''' , ((aCSNUIWidgetLabel attributes select: [ :attribute | attribute isKindOf: CSNUILabel ]) flatCollect: [ :attribute | self visit: attribute ]) , '''.'
+		, String crlf , (aCSNUIWidgetLabel widgets flatCollect: [ :widget | (self visit: widget) , String crlf , String tab ]) , ']'
 ]
 
 { #category : #visiting }
