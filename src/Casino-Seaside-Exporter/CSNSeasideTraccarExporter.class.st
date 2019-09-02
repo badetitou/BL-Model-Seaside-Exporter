@@ -17,6 +17,9 @@ CSNSeasideTraccarExporter >> generateCss [
 			'mainCss
     ^ ''
 .mdl-textfield {
+	display: block;
+	 margin: 0;
+    padding: 0;
     zoom: 1;
     white-space: nowrap;
     text-align: left;
@@ -30,11 +33,10 @@ CSNSeasideTraccarExporter >> generateCss [
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
     overflow: hidden;
-	 padding: 0 0;
 }
 
 .mdl-textfield__input {
-    height: auto;
+   height: auto;
     padding: 2px 6px 1px 6px;
     resize: none;
     height: 24px;
@@ -51,7 +53,6 @@ CSNSeasideTraccarExporter >> generateCss [
     -webkit-box-shadow: none;
     box-shadow: none;
 }
-
 
 .mdl-button{ 
     line-height: 18px;
@@ -134,6 +135,9 @@ label {
     z-index: 2;
 }
 
+.mdl-textfield > label { 
+	float: unset;
+}
 
 '''
 ]
