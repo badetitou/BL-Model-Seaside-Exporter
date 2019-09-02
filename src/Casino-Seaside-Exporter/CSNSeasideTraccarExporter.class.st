@@ -141,3 +141,8 @@ label {
 
 '''
 ]
+
+{ #category : #visiting }
+CSNSeasideTraccarExporter >> visitCSNUIInputCheckbox: aBLUICheckbox [
+	^ 'html checkbox.'
+]
