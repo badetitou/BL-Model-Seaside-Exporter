@@ -411,7 +411,6 @@ CSNSeasideExporter >> visitCSNUIFieldset: aBLUIFieldset [
 			'
 		with: [ 
 			html mdlCardTitleContainer
-				style: ''background: #d2e9fb'';
 				with: [ html mdlCardTitleText: '''
 		,
 			((aBLUIFieldset attributes select: [ :attribute | attribute isKindOf: CSNUITitle ])
@@ -681,8 +680,9 @@ CSNSeasideExporter >> visitCSNUIValue: aBLUIValue [
 
 { #category : #visiting }
 CSNSeasideExporter >> visitCSNUIWidgetLabel: aCSNUIWidgetLabel [
-	^ 'html label with: [ html text: ''' , ((aCSNUIWidgetLabel attributes select: [ :attribute | attribute isKindOf: CSNUILabel ]) flatCollect: [ :attribute | self visit: attribute ]) , '''.'
-		, String crlf , (aCSNUIWidgetLabel widgets flatCollect: [ :widget | (self visit: widget) , String crlf , String tab ]) , ']'
+	^ 'html label ' , (self styleForWidget: aCSNUIWidgetLabel) , 'with: [ html text: '''
+		, ((aCSNUIWidgetLabel attributes select: [ :attribute | attribute isKindOf: CSNUILabel ]) flatCollect: [ :attribute | self visit: attribute ]) , '''.' , String crlf
+		, (aCSNUIWidgetLabel widgets flatCollect: [ :widget | (self visit: widget) , String crlf , String tab ]) , '].'
 ]
 
 { #category : #visiting }
