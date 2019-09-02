@@ -54,7 +54,7 @@ CSNSeasideTraccarExporter >> generateCss [
     box-shadow: none;
 }
 
-.mdl-button{ 
+.mdl-button { 
     line-height: 18px;
     font-size: 12px;
     padding: 1px 1px 1px 1px;
@@ -73,7 +73,7 @@ CSNSeasideTraccarExporter >> generateCss [
     border-color: #126DAF;
     background-color: #3892d3;
     box-sizing: border-box;
-    height: 100%;
+    height: auto;
     background: -webkit-linear-gradient(top, #4B9CD7 0%, #3892D3 50%, #358AC8 51%, #3892D3);
     background: -o-linear-gradient(top, #4B9CD7 0%, #3892D3 50%, #358AC8 51%, #3892D3);
     background: -ms-linear-gradient(top, #4B9CD7 0%, #3892D3 50%, #358AC8 51%, #3892D3);
