@@ -109,7 +109,8 @@ CSNSeasideTraccarExporter >> generateCss [
 	width: auto;
 }
 
-.mdl-card { 
+.mdl-card {
+    width: auto;
     border-radius: 4px;
     border-width: 5px 5px 5px 5px;
     border-style: solid;
