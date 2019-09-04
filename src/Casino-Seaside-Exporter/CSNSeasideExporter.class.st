@@ -16,6 +16,34 @@ CSNSeasideExporter >> acceptedNameForPageMetier: aPageMetier [
 	^ self prefix , ((aPageMetier name splitOn: ':') last)
 ]
 
+{ #category : #accessing }
+CSNSeasideExporter >> createCustomWidgetClass: customWidget [
+	| class |
+	class := MDLApplication
+		subclass: self prefix , customWidget name
+		instanceVariableNames: ''
+		classVariableNames: ''
+		package: self model name.
+	self exportOpenOnSeasideForClass: class.
+	class
+		compile:
+			'initialize
+    super initialize.'.
+	class
+		compile:
+			'updateRoot: anHtmlRoot
+		super updateRoot: anHtmlRoot.
+		anHtmlRoot stylesheet url: WAFileLibrary' , self model name , ' / #mainCss'.
+	class class
+		compile:
+			'initialize
+	(self registerToDeployment: ''' , class name , ''') addLibrary: WAFileLibrary' , self model name.
+	class
+		compile:
+			'renderContentOn: html  
+	' , (customWidget widgets flatCollect: [ :widget | widget accept: self ])
+]
+
 { #category : #visiting }
 CSNSeasideExporter >> createSubPageMetierOf: aBLPhase [.
 	aBLPhase businessPage do: [ :metier |
@@ -178,7 +206,8 @@ CSNSeasideExporter >> prefix [
 { #category : #accessing }
 CSNSeasideExporter >> prepareExport [
 	
-	"RPackageOrganizer default createPackageNamed: model name"
+	"create CustomWidget"
+	(self model allWithSubTypesOf: CSNUICustomWidget) do: [ :customWidget | self createCustomWidgetClass: customWidget ] 
 ]
 
 { #category : #'private-accessing' }
@@ -207,7 +236,7 @@ CSNSeasideExporter >> visitCSNBusinessPage: aPageMetier [
 
 { #category : #visiting }
 CSNSeasideExporter >> visitCSNContainer: aBLUIContainer [
-	^ aBLUIContainer widgets flatCollect: [ :widget | (self visit: widget), String crlf, String tab ]
+	^ aBLUIContainer widgets flatCollect: [ :widget | (self visit: widget) ifNotEmpty: [ :a | a , String crlf, String tab ] ]
 ]
 
 { #category : #visiting }
@@ -232,6 +261,26 @@ CSNSeasideExporter >> visitCSNDynamicFieldset: aBLUIFieldsetDynamic [
 		,
 			' 
 				] ].'
+]
+
+{ #category : #visiting }
+CSNSeasideExporter >> visitCSNLBorderLayout: aCSNLBorderLayout [
+	^ 'html mdlGrid
+		shadow: 2;
+		with: ['
+		,
+			({#isNorth . #isCenter . #isSouth}
+				flatCollect: [ :alignementSelector | 
+					(aCSNLBorderLayout cell select: [ :cell | (cell position isKindOf: CSNLAlignement) and: [ cell position perform: alignementSelector ] ])
+						ifNotEmpty: [ :northCells | 
+							| sizeCell |
+							sizeCell := (12 / northCells size) asInteger.
+							northCells
+								flatCollect: [ :cell | 
+									'html mdlCell size: ' , sizeCell printString 
+										,
+											';
+	with: [ ' , (cell accept: self) , '].' ] ] ]) , '].'
 ]
 
 { #category : #visiting }
@@ -368,30 +417,7 @@ CSNSeasideExporter >> visitCSNUIClass: aBLUIClass [
 
 { #category : #visiting }
 CSNSeasideExporter >> visitCSNUICustomWidget: aCSNUICustomWidget [
-	| class |
-	class := MDLApplication
-		subclass: self prefix , aCSNUICustomWidget name
-		instanceVariableNames: ''
-		classVariableNames: ''
-		package: self model name.
-	self exportOpenOnSeasideForClass: class.
-	class
-		compile:
-			'initialize
-    super initialize.'.
-	class
-		compile:
-			'updateRoot: anHtmlRoot
-		super updateRoot: anHtmlRoot.
-		anHtmlRoot stylesheet url: WAFileLibrary' , self model name , ' / #mainCss'.
-	class class
-		compile:
-			'initialize
-	(self registerToDeployment: ''' , class name , ''') addLibrary: WAFileLibrary' , self model name.
-	class
-		compile:
-			'renderContentOn: html  
-	' , (aCSNUICustomWidget widgets flatCollect: [ :widget | widget accept: self ])
+	^ 'html render: (' , (self prefix , aCSNUICustomWidget name) , ' new).'
 ]
 
 { #category : #visiting }
