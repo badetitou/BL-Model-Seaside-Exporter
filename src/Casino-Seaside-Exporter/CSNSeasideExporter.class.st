@@ -657,9 +657,14 @@ CSNSeasideExporter >> visitCSNUIPlaceholder: aBLUIPlaceholder [
 
 { #category : #visiting }
 CSNSeasideExporter >> visitCSNUISelect: aCSNUISelect [
+
 	^ 'html
     render:
-        (MDLSelectWidget new).'
+        (MDLSelectWidget new '
+		,
+			((aCSNUISelect attributes select: [ :att | att isKindOf: CSNUIPlaceholder ])
+				ifNotEmpty: [ :placeholders | 'inputLabel: ''' , (placeholders flatCollect: [ :placeholder | self visit: placeholder ]) , ''';' , String crlf , String tab ]
+				ifEmpty: [ '' ]) , ').'
 ]
 
 { #category : #visiting }
