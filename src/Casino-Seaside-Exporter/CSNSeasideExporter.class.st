@@ -667,6 +667,12 @@ CSNSeasideExporter >> visitCSNUISelect: aCSNUISelect [
 ]
 
 { #category : #visiting }
+CSNSeasideExporter >> visitCSNUITab: aCSNUITab [
+	^ 'html render: (MDLTabWidget new ' , (aCSNUITab widgets flatCollect: [ :widget | 'addTabNamed: ''' , widget name , ''' content: [ ' , (self visit: widget) , '];' , String crlf , String tab ])
+		, 'yourself).'
+]
+
+{ #category : #visiting }
 CSNSeasideExporter >> visitCSNUITabManager: aBLUITabManager [
 	^ ''
 ]
