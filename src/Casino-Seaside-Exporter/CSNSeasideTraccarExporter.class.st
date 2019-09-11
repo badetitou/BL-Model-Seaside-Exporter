@@ -17,7 +17,6 @@ CSNSeasideTraccarExporter >> generateCss [
 			'mainCss
     ^ ''
 .mdl-textfield {
-	display: block;
 	 margin: 0;
     padding: 0;
     zoom: 1;
