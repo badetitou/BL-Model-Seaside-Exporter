@@ -266,7 +266,7 @@ CSNSeasideExporter >> visitCSNDynamicFieldset: aBLUIFieldsetDynamic [
 
 { #category : #visiting }
 CSNSeasideExporter >> visitCSNLBorderLayout: aCSNLBorderLayout [
-	^ 'html mdlGrid
+	^ 'html mdlGrid noSpacing;
 		shadow: 2;
 		with: ['
 		,
