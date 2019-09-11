@@ -402,10 +402,8 @@ CSNSeasideExporter >> visitCSNPage: aBLPage [
 CSNSeasideExporter >> visitCSNUIButton: aBLUIButton [
 	^ 'html mdlButton
 		rippleEffect;
-		' ,
-		((aBLUIButton attributes select: [ :attribute | (attribute isKindOf: CSNUIDisabled) and: [ attribute attributeValue = 'true' ] ]) ifNotEmpty: [ :col | (self visit: (col at: 1)) , ';' ])
-		,
-			((aBLUIButton attributes select: [ :attribute | attribute isKindOf: CSNUITitle ]) ifNotEmpty: [ :col | 'title: ''' , (self visit: (col at: 1)) , ''';' , String crlf , String tab ])
+		' , ((aBLUIButton attributes select: [ :attribute | attribute isKindOf: CSNUIDisabled ]) ifNotEmpty: [ :col | (self visit: (col at: 1)) ])
+		, ((aBLUIButton attributes select: [ :attribute | attribute isKindOf: CSNUITitle ]) ifNotEmpty: [ :col | 'title: ''' , (self visit: (col at: 1)) , ''';' , String crlf , String tab ])
 		,
 			'
 		with: ''' , ((aBLUIButton attributes select: [ :attribute | attribute isKindOf: CSNUILabel ]) flatCollect: [ :attribute | self visit: attribute ]) , '''.'
@@ -423,9 +421,7 @@ CSNSeasideExporter >> visitCSNUICustomWidget: aCSNUICustomWidget [
 
 { #category : #visiting }
 CSNSeasideExporter >> visitCSNUIDisabled: aBLUIDisabled [
-	aBLUIDisabled disabled
-		ifTrue: [ ^ 'disabled' ]
-		ifFalse: [ ^ '' ]
+	(aBLUIDisabled disabled isNotNil and: [ aBLUIDisabled disabled ]) ifTrue: [ ^ 'disabled;' ] ifFalse: [ ^ '' ]
 ]
 
 { #category : #visiting }
