@@ -555,7 +555,7 @@ CSNSeasideExporter >> visitCSNUIInputRange: aBLUIInputRange [
 
 { #category : #visiting }
 CSNSeasideExporter >> visitCSNUIInputSearch: aBLUIInputSearch [
-	^ 'html searchInput.'
+	^ 'html searchInput ', ((aBLUIInputSearch attributes select: [:att | att isKindOf: CSNUIPlaceholder]) ifNotEmpty: [ :placeholders | 'placeholder: ''', (placeholders flatCollect: [ :placeholder | (self visit: placeholder ) ]), ''';', String crlf, String tab ] ifEmpty: [ '' ]), 'yourself.'
 ]
 
 { #category : #visiting }
