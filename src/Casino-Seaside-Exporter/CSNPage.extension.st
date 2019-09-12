@@ -2,7 +2,7 @@ Extension { #name : #CSNPage }
 
 { #category : #'*Casino-Seaside-Exporter' }
 CSNPage >> writeCodeWith: anExporter [
-	^ (self container isKindOf: BLPage)
+	^ (self container isKindOf: CSNPage)
 		ifFalse: [ ^ '' ]
 		ifTrue: [ | class |
 			class := SmalltalkImage current classNamed: self container name.
