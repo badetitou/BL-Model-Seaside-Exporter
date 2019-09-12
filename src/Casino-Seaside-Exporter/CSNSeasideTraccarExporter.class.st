@@ -134,16 +134,11 @@ label {
     color: #000000;
     text-align: left;
     clear: left;
-    display: block;
-    float: left;
+    display: inline-block;
     padding: 5px 5px 0px 0px;
     position: relative;
     z-index: 2;
     overflow: hidden;
-}
-
-.mdl-textfield > label { 
-	float: unset;
 }
 
 '''
@@ -151,5 +146,7 @@ label {
 
 { #category : #visiting }
 CSNSeasideTraccarExporter >> visitCSNUIInputCheckbox: aBLUICheckbox [
-	^ 'html checkbox.'
+	^ 'html checkbox '
+		, ((aBLUICheckbox attributes select: [ :attribute | (attribute isKindOf: CSNUIDisabled) and: [ attribute attributeValue = 'true' ] ]) ifNotEmpty: [ :col | (self visit: (col at: 1)) , ';' ])
+		, '	yourself.' , ((aBLUICheckbox attributes select: [ :attribute | attribute isKindOf: CSNUILabel ]) ifNotEmpty: [ :col | 'html label with: ''' , (self visit: (col at: 1)) , '''.' ])
 ]
