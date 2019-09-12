@@ -121,6 +121,12 @@ CSNSeasideTraccarExporter >> generateCss [
 }
 
 
+.mdl-sorted-table > .mdl-card {
+    border-width: 0px;
+    border-color: #ffffff;
+    min-height: auto;
+}
+
 label { 
 	 font-family: helvetica,arial,verdana,sans-serif;
     font-size: 13px;

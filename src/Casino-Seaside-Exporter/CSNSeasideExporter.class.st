@@ -679,6 +679,15 @@ CSNSeasideExporter >> visitCSNUITabManager: aBLUITabManager [
 ]
 
 { #category : #visiting }
+CSNSeasideExporter >> visitCSNUITable: aCSNUITable [
+	^ '	html div
+		with:
+			(MDLSortableTable new
+				header: {''A'' . ''B'' . ''C''};
+				rows: [ { { 1 . 2 . 3 } } ]).'
+]
+
+{ #category : #visiting }
 CSNSeasideExporter >> visitCSNUITextarea: aBLUIInputTextArea [
 	^ 'html
 		mdlTextFieldContainer: [ html mdlTextFieldLabel
