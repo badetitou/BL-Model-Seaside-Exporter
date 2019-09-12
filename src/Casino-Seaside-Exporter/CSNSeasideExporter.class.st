@@ -236,8 +236,8 @@ CSNSeasideExporter >> visitCSNBusinessPage: aPageMetier [
 
 { #category : #visiting }
 CSNSeasideExporter >> visitCSNContainer: aBLUIContainer [
-	^ (aBLUIContainer widgets flatCollect: [ :widget | (self visit: widget) ifNotEmpty: [ :a | a , String crlf , String tab ] ])
-		ifEmpty: [ aBLUIContainer layout ifNotNil: [ self visitCSNUIPanel: aBLUIContainer ] ifNil: [ '' ] ]
+	^ (aBLUIContainer layout ifNotNil: [ :layout | self visit: layout ] ifNil: [ '' ])
+		, (aBLUIContainer widgets flatCollect: [ :widget | (self visit: widget) ifNotEmpty: [ :a | a , String crlf , String tab ] ])
 ]
 
 { #category : #visiting }
@@ -633,11 +633,6 @@ CSNSeasideExporter >> visitCSNUIList: aBLUIList [
 { #category : #visiting }
 CSNSeasideExporter >> visitCSNUIName: aBLUIName [
 	^ aBLUIName attributeValue
-]
-
-{ #category : #visiting }
-CSNSeasideExporter >> visitCSNUIPanel: aBLUIPanel [
-	^ aBLUIPanel layout ifNotNil: [ self visit: aBLUIPanel layout ] ifNil: [ self visitCSNContainer: aBLUIPanel ]
 ]
 
 { #category : #visiting }
