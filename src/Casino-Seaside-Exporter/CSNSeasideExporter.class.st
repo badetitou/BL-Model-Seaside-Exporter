@@ -425,6 +425,19 @@ CSNSeasideExporter >> visitCSNUIDisabled: aBLUIDisabled [
 ]
 
 { #category : #visiting }
+CSNSeasideExporter >> visitCSNUIDropdownButton: aCSNUIDropdownButton [
+	^ 'html mdlButton
+		rippleEffect;
+		id: html nextId;
+		' , ((aCSNUIDropdownButton attributes select: [ :attribute | attribute isKindOf: CSNUIDisabled ]) ifNotEmpty: [ :col | self visit: (col at: 1) ])
+		, ((aCSNUIDropdownButton attributes select: [ :attribute | attribute isKindOf: CSNUITitle ]) ifNotEmpty: [ :col | 'title: ''' , (self visit: (col at: 1)) , ''';' , String crlf , String tab ])
+		,
+			'
+		with: ''' , ((aCSNUIDropdownButton attributes select: [ :attribute | attribute isKindOf: CSNUILabel ]) flatCollect: [ :attribute | self visit: attribute ]) , '''.'
+		, ((aCSNUIDropdownButton widgets select: [ :widget | widget isKindOf: CSNUIMenu ]) flatCollect: [ :menu | self visit: menu ])
+]
+
+{ #category : #visiting }
 CSNSeasideExporter >> visitCSNUIFieldset: aBLUIFieldset [
 	^ 'html mdlCard
 		shadow: 2;
@@ -628,6 +641,18 @@ CSNSeasideExporter >> visitCSNUIList: aBLUIList [
 						tableRow: [ html mdlTableHeading: ''Head1''.
 							html tableHeading: ''Head2''. ] ].
 			 ].'
+]
+
+{ #category : #visiting }
+CSNSeasideExporter >> visitCSNUIMenu: aCSNUIMenu [
+	^ 'html mdlMenu
+		for: html lastId;
+		with: [', (aCSNUIMenu widgets flatCollect: [:widget | self visit: widget ]), '].'
+]
+
+{ #category : #visiting }
+CSNSeasideExporter >> visitCSNUIMenuItem: aCSNUIMenuItem [
+	^ 'html mdlMenuItem',((aCSNUIMenuItem attributes select: [:attribute | attribute isKindOf: CSNUILabel]) ifNotEmpty: [ :labels | ' with: ''', (labels flatCollect: [:label | self visit: label ]), '''']), '.'
 ]
 
 { #category : #visiting }
