@@ -683,8 +683,12 @@ CSNSeasideExporter >> visitCSNUISelect: aCSNUISelect [
 
 { #category : #visiting }
 CSNSeasideExporter >> visitCSNUITab: aCSNUITab [
-	^ 'html render: (MDLTabWidget new ' , (aCSNUITab widgets flatCollect: [ :widget | 'addTabNamed: ''' , widget name , ''' content: [ ' , (self visit: widget) , '];' , String crlf , String tab ])
-		, 'yourself).'
+	^ 'html render: (MDLTabWidget new '
+		,
+			(aCSNUITab widgets
+				flatCollect: [ :widget | 
+					'addTabNamed: ''' , ((widget attributes select: [ :attribute | attribute isKindOf: CSNUILabel ]) ifNotEmpty: [ :labels | labels flatCollect: #attributeValue ] ifEmpty: [ widget name ])
+						, ''' content: [ ' , (self visit: widget) , '];' , String crlf , String tab ]) , 'yourself).'
 ]
 
 { #category : #visiting }
