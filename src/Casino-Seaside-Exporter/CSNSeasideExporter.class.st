@@ -241,30 +241,6 @@ CSNSeasideExporter >> visitCSNContainer: aBLUIContainer [
 ]
 
 { #category : #visiting }
-CSNSeasideExporter >> visitCSNDynamicFieldset: aBLUIFieldsetDynamic [
-	^ 'html mdlCard
-		shadow: 2;
-		mdlTypographyTextLeft;' , (self styleForWidget: aBLUIFieldsetDynamic)
-		,
-			'
-		with: [ 
-			html mdlCardTitleContainer
-				style: ''background: #d2e9fb'';
-				with: [ html mdlCardTitleText: '''
-		,
-			((aBLUIFieldsetDynamic attributes select: [ :attribute | attribute isKindOf: CSNUITitle ])
-				ifNotEmpty: [ :col | self visit: (col at: 1) ])
-		,
-			''' ].
-				
-			html mdlCardTextContainer: [ 
-				' , (self visitCSNUIPanel: aBLUIFieldsetDynamic)
-		,
-			' 
-				] ].'
-]
-
-{ #category : #visiting }
 CSNSeasideExporter >> visitCSNLBorderLayout: aCSNLBorderLayout [
 	^ 'html mdlGrid noSpacing;
 		shadow: 2;
@@ -407,6 +383,30 @@ CSNSeasideExporter >> visitCSNUIButton: aBLUIButton [
 		,
 			'
 		with: ''' , ((aBLUIButton attributes select: [ :attribute | attribute isKindOf: CSNUILabel ]) flatCollect: [ :attribute | self visit: attribute ]) , '''.'
+]
+
+{ #category : #visiting }
+CSNSeasideExporter >> visitCSNUICWDynamicFieldset: aBLUIFieldsetDynamic [
+	^ 'html mdlCard
+		shadow: 2;
+		mdlTypographyTextLeft;' , (self styleForWidget: aBLUIFieldsetDynamic)
+		,
+			'
+		with: [ 
+			html mdlCardTitleContainer
+				style: ''background: #d2e9fb'';
+				with: [ html mdlCardTitleText: '''
+		,
+			((aBLUIFieldsetDynamic attributes select: [ :attribute | attribute isKindOf: CSNUITitle ])
+				ifNotEmpty: [ :col | self visit: (col at: 1) ])
+		,
+			''' ].
+				
+			html mdlCardTextContainer: [ 
+				' , (self visitCSNUIPanel: aBLUIFieldsetDynamic)
+		,
+			' 
+				] ].'
 ]
 
 { #category : #visiting }
@@ -581,20 +581,14 @@ CSNSeasideExporter >> visitCSNUIInputText: aBLUIInputText [
 	^ '	html
 		mdlTextFieldContainer: [ html mdlTextFieldLabel
 				for: html nextId;
-				with: '''
-		,
-			((aBLUIInputText attributes select: [ :attribute | attribute isKindOf: CSNUIPlaceholder ])
-				flatCollect: [ :attribute | self visit: attribute ])
+				with: ''' , ((aBLUIInputText attributes select: [ :attribute | attribute isKindOf: CSNUIPlaceholder ]) flatCollect: [ :attribute | self visit: attribute ])
 		,
 			'''.
-			html mdlTextFieldInput id: html lastId; value: '''
+			html mdlTextFieldInput id: html lastId; value: ''' , ((aBLUIInputText attributes select: [ :attribute | attribute isKindOf: CSNUIValue ]) flatCollect: [ :attribute | self visit: attribute ])
+		, '''	'
 		,
-			((aBLUIInputText attributes select: [ :attribute | attribute isKindOf: CSNUIValue ])
-				flatCollect: [ :attribute | self visit: attribute ]) , '''	'
-		,
-			((aBLUIInputText attributes select: [ :attribute | (attribute isKindOf: CSNUIDisabled) and: [ attribute disabled ] ])
-				ifNotEmpty: [ :col | ';' , String crlf , String tab , (self visit: (col at: 1)) ])
-		, ' ].'
+			((aBLUIInputText attributes select: [ :attribute | (attribute isKindOf: CSNUIDisabled) and: [ attribute disabled ] ]) ifNotEmpty: [ :col | ';' , String crlf , String tab , (self visit: (col at: 1)) ])
+		, ' yourself ].'
 ]
 
 { #category : #visiting }

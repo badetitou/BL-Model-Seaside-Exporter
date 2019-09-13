@@ -32,6 +32,19 @@ CSNSeasideTraccarExporter >> generateCss [
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
     overflow: hidden;
+    display: inline-flex;
+}
+
+.mdl-textfield__label { 
+	top: 0px;
+}
+
+.mdl-textfield.is-focused .mdl-textfield__label:after {
+    visibility: hidden;
+}
+
+.mdl-cell { 
+	display: inline-flex;
 }
 
 .mdl-textfield__input {
@@ -134,7 +147,7 @@ label {
     color: #000000;
     text-align: left;
     clear: left;
-    display: inline-block;
+    display: inline-flex;
     padding: 5px 5px 0px 0px;
     position: relative;
     z-index: 2;
@@ -149,4 +162,9 @@ CSNSeasideTraccarExporter >> visitCSNUIInputCheckbox: aBLUICheckbox [
 	^ 'html checkbox '
 		, ((aBLUICheckbox attributes select: [ :attribute | (attribute isKindOf: CSNUIDisabled) and: [ attribute attributeValue = 'true' ] ]) ifNotEmpty: [ :col | (self visit: (col at: 1)) , ';' ])
 		, '	yourself.' , ((aBLUICheckbox attributes select: [ :attribute | attribute isKindOf: CSNUILabel ]) ifNotEmpty: [ :col | 'html label with: ''' , (self visit: (col at: 1)) , '''.' ])
+]
+
+{ #category : #visiting }
+CSNSeasideTraccarExporter >> visitCSNUIInputNumber: aBLUIInputNumber [
+	^ self visitCSNUIInputText: aBLUIInputNumber
 ]
