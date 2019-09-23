@@ -165,7 +165,6 @@ open
 				ifFound: [ :anAdaptor | port := anAdaptor server port ]
 				ifNone: [ (ZnZincServerAdaptor port: (port := 8085)) start ] ].
 	url := ''http://localhost:'' , port asString , ''/', aClass name, '''.
-	self flag: #pharo6.
 	SystemVersion current major < 7
 		ifTrue: [ self class environment
 				at: #OSProcess
